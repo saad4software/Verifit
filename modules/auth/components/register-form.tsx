@@ -6,6 +6,8 @@ import Link from "next/link";
 import { signUp } from "@/modules/auth/client";
 import { AlertCircle, ArrowRight, Loader2, Sparkles } from "lucide-react";
 
+import { registerSchema } from "@/modules/auth/schemas";
+
 export function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -22,24 +24,15 @@ export function RegisterForm() {
     e.preventDefault();
     setError(null);
 
-    // Client-side validations
-    if (!name.trim()) {
-      setError("Please enter your full name.");
-      return;
-    }
+    const result = registerSchema.safeParse({
+      name,
+      email,
+      password,
+      confirmPassword,
+    });
 
-    if (!email.includes("@") || !email.includes(".")) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+    if (!result.success) {
+      setError(result.error.issues[0]?.message || "Invalid input.");
       return;
     }
 

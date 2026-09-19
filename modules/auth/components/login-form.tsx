@@ -6,6 +6,8 @@ import Link from "next/link";
 import { signIn } from "@/modules/auth/client";
 import { AlertCircle, ArrowRight, Loader2, Sparkles } from "lucide-react";
 
+import { loginSchema } from "@/modules/auth/schemas";
+
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -20,13 +22,9 @@ export function LoginForm() {
     e.preventDefault();
     setError(null);
 
-    if (!email.trim() || !email.includes("@")) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-
-    if (!password) {
-      setError("Please enter your password.");
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) {
+      setError(result.error.issues[0]?.message || "Invalid input.");
       return;
     }
 

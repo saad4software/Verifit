@@ -23,6 +23,10 @@ import {
   AlertTriangle,
   X,
 } from "lucide-react";
+import {
+  profileUpdateSchema,
+  passwordUpdateSchema,
+} from "@/modules/auth/schemas";
 
 interface AccountDashboardProps {
   initialUser: {
@@ -128,8 +132,9 @@ export function AccountDashboard({
     setProfileSuccess(null);
     setProfileError(null);
 
-    if (!name.trim()) {
-      setProfileError("Display name cannot be empty.");
+    const result = profileUpdateSchema.safeParse({ name, image });
+    if (!result.success) {
+      setProfileError(result.error.issues[0]?.message || "Invalid input.");
       return;
     }
 
@@ -161,18 +166,13 @@ export function AccountDashboard({
     setPasswordSuccess(null);
     setPasswordError(null);
 
-    if (!currentPassword) {
-      setPasswordError("Please enter your current password.");
-      return;
-    }
-
-    if (newPassword.length < 8) {
-      setPasswordError("New password must be at least 8 characters long.");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setPasswordError("New passwords do not match.");
+    const result = passwordUpdateSchema.safeParse({
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    });
+    if (!result.success) {
+      setPasswordError(result.error.issues[0]?.message || "Invalid input.");
       return;
     }
 
