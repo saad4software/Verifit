@@ -4,10 +4,10 @@
 
 **Blocked by:** 01: Core Database, Auth Scaffolding & Migration Seam
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] `/register` page and `RegisterForm` component with accessible form fields and clear client validation
-- [ ] Better Auth API route handler mounted at `/api/auth/[...all]` handling credential registration
-- [ ] Immediate session creation upon valid registration without requiring email confirmation
-- [ ] Automatic client redirect to the destination URL upon success, with error banner handling for duplicate emails or invalid inputs
-- [ ] Vitest unit tests verifying form validation, submission behavior, and error alerts
+- [x] `/register` page and `RegisterForm` component with accessible form fields and clear client validation
+- [x] Better Auth API route handler mounted at `/api/auth/[...all]` handling credential registration
+- [x] Immediate session creation upon valid registration without requiring email confirmation
+- [x] Automatic client redirect to the destination URL upon success, with error banner handling for duplicate emails or invalid inputs
+- [x] Vitest unit tests verifying form validation, submission behavior, and error alerts
