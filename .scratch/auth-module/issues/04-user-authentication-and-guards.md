@@ -4,10 +4,10 @@
 
 **Blocked by:** 03: User Registration & Immediate Session Establishment
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] `/login` page and `LoginForm` component with loading states and error notifications for invalid credentials
-- [ ] Preservation and redirect handling for `callbackUrl` query parameters upon successful login
-- [ ] Next.js `middleware.ts` intercepting protected routes (`/account/:path*`) and redirecting guests to `/login`
-- [ ] Global header sign-out action invoking Better Auth signOut and clearing client session state
-- [ ] Vitest tests verifying login submission, error handling, and session guard logic
+- [x] `/login` page and `LoginForm` component with loading states and error notifications for invalid credentials
+- [x] Preservation and redirect handling for `callbackUrl` query parameters upon successful login
+- [x] Next.js `middleware.ts` intercepting protected routes (`/account/:path*`) and redirecting guests to `/login`
+- [x] Global header sign-out action invoking Better Auth signOut and clearing client session state
+- [x] Vitest tests verifying login submission, error handling, and session guard logic
