@@ -19,6 +19,11 @@ export function createAuthInstance(databaseInstance: Database = db) {
       enabled: true,
       minPasswordLength: 8,
     },
+    user: {
+      deleteUser: {
+        enabled: true,
+      },
+    },
     plugins: [
       admin({
         defaultRole: "user",

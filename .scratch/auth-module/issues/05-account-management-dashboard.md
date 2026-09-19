@@ -4,11 +4,11 @@
 
 **Blocked by:** 04: User Authentication, Route Protection & Sign Out
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] `/account` protected route with server component `requireUser()` prefetching session data
-- [ ] Profile management tab allowing updates to display name and avatar URL
-- [ ] Security tab for changing password with current password verification
-- [ ] Active sessions tab rendering all open sessions with the ability to revoke individual remote sessions
-- [ ] Danger zone section with a confirmation modal to permanently delete the account
-- [ ] Vitest component tests verifying account settings interactions and validation states
+- [x] `/account` protected route with server component `requireUser()` prefetching session data
+- [x] Profile management tab allowing updates to display name and avatar URL
+- [x] Security tab for changing password with current password verification
+- [x] Active sessions tab rendering all open sessions with the ability to revoke individual remote sessions
+- [x] Danger zone section with a confirmation modal to permanently delete the account
+- [x] Vitest component tests verifying account settings interactions and validation states
