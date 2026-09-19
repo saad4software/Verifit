@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "@/modules/auth/client";
-import { Sparkles, User as UserIcon, LogOut, LayoutDashboard, Shield } from "lucide-react";
+import { Sparkles, User as UserIcon, LogOut, Shield } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {

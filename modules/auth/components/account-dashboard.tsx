@@ -91,17 +91,35 @@ export function AccountDashboard({
       } else if (response.error) {
         setSessionsError(response.error.message || "Could not load sessions.");
       }
-    } catch (err: any) {
-      setSessionsError(err?.message || "Failed to load sessions.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to load sessions.";
+      setSessionsError(message);
     } finally {
       setIsLoadingSessions(false);
     }
   };
 
   useEffect(() => {
+    let isMounted = true;
     if (activeTab === "sessions") {
-      fetchSessions();
+      listSessions()
+        .then((response) => {
+          if (!isMounted) return;
+          if (response.data) {
+            setSessions(response.data as unknown as SessionRecord[]);
+          } else if (response.error) {
+            setSessionsError(response.error.message || "Could not load sessions.");
+          }
+        })
+        .catch((err) => {
+          if (!isMounted) return;
+          const message = err instanceof Error ? err.message : "Failed to load sessions.";
+          setSessionsError(message);
+        });
     }
+    return () => {
+      isMounted = false;
+    };
   }, [activeTab]);
 
   // Profile update handler
@@ -129,8 +147,10 @@ export function AccountDashboard({
 
         setProfileSuccess("Profile details updated successfully.");
         router.refresh();
-      } catch (err: any) {
-        setProfileError(err?.message || "An unexpected error occurred.");
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "An unexpected error occurred.";
+        setProfileError(message);
       }
     });
   };
@@ -175,8 +195,10 @@ export function AccountDashboard({
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
-      } catch (err: any) {
-        setPasswordError(err?.message || "An unexpected error occurred.");
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "An unexpected error occurred.";
+        setPasswordError(message);
       }
     });
   };
@@ -187,8 +209,10 @@ export function AccountDashboard({
     try {
       await revokeSession({ token });
       setSessions((prev) => prev.filter((s) => s.token !== token));
-    } catch (err: any) {
-      setSessionsError(err?.message || "Failed to revoke session.");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to revoke session.";
+      setSessionsError(message);
     } finally {
       setRevokingToken(null);
     }
@@ -215,8 +239,10 @@ export function AccountDashboard({
       setIsDeleteModalOpen(false);
       router.push("/");
       router.refresh();
-    } catch (err: any) {
-      setDeleteError(err?.message || "Failed to delete account.");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to delete account.";
+      setDeleteError(message);
       setIsDeleting(false);
     }
   };

@@ -50,10 +50,10 @@ export function LoginForm() {
 
       router.push(callbackUrl);
       router.refresh();
-    } catch (err: any) {
-      setError(
-        err?.message || "An unexpected error occurred. Please try again."
-      );
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "An unexpected error occurred. Please try again.";
+      setError(message);
       setIsLoading(false);
     }
   };

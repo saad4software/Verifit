@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { RegisterForm } from "@/modules/auth/components/register-form";
-import * as authClient from "@/modules/auth/client";
 
 const mockPush = vi.fn();
 const mockRefresh = vi.fn();
