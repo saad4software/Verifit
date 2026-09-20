@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "@/modules/auth/client";
-import { Sparkles, User as UserIcon, LogOut, Shield, FileText } from "lucide-react";
+import { Sparkles, User as UserIcon, LogOut, Shield, FileText, Briefcase } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {
@@ -58,14 +58,24 @@ export function Header() {
             How it Works
           </Link>
           {session?.user && (
-            <Link
-              href="/cvs"
-              data-testid="nav-cvs"
-              className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1.5"
-            >
-              <FileText className="h-4 w-4" />
-              My Resumes
-            </Link>
+            <>
+              <Link
+                href="/cvs"
+                data-testid="nav-cvs"
+                className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1.5"
+              >
+                <FileText className="h-4 w-4" />
+                My Resumes
+              </Link>
+              <Link
+                href="/jds"
+                data-testid="nav-jds"
+                className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1.5"
+              >
+                <Briefcase className="h-4 w-4" />
+                Job Descriptions
+              </Link>
+            </>
           )}
           <Link
             href="/studio"
@@ -130,6 +140,15 @@ export function Header() {
                   >
                     <FileText className="h-4 w-4 text-indigo-500" />
                     My Resumes
+                  </Link>
+                  <Link
+                    href="/jds"
+                    data-testid="dropdown-jds"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+                  >
+                    <Briefcase className="h-4 w-4 text-indigo-500" />
+                    Job Descriptions
                   </Link>
                   <Link
                     href="/account"

@@ -1,3 +1,4 @@
+import { jdTypes } from './jd'
 import { type SchemaTypeDefinition } from 'sanity'
 
 import { cv } from './cv'
@@ -18,6 +19,7 @@ import { customItem, customSection } from './sections/custom'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
+    ...jdTypes,
     cv,
     personalInfo,
     workExperienceItem,

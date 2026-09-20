@@ -16,14 +16,14 @@ export interface CvSanityClient {
   ): Promise<T & { _id: string; _createdAt: string }>
   patch(id: string): {
     set: (fields: Record<string, unknown>) => {
-      set: (f: Record<string, unknown>) => any
-      unset: (f: string[]) => any
-      commit: (options?: unknown) => Promise<any>
+      set: (f: Record<string, unknown>) => unknown
+      unset: (f: string[]) => unknown
+      commit: (options?: unknown) => Promise<unknown>
     }
-    unset: (fields: string[]) => any
-    commit: (options?: unknown) => Promise<any>
+    unset: (fields: string[]) => unknown
+    commit: (options?: unknown) => Promise<unknown>
   }
-  delete(id: string, options?: unknown): Promise<any>
+  delete(id: string, options?: unknown): Promise<unknown>
 }
 
 /**

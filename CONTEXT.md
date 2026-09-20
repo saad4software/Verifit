@@ -56,4 +56,26 @@ _Avoid_: Job state, Progress tracker
 A designated CV chosen by the User to serve as their baseline or default profile for job tailoring workflows.
 _Avoid_: Master CV, Main resume, Default CV
 
+**Job Description (JD)**:
+A private, User-owned description of one job opportunity, supplied as text or imported from a web page. A JD exists independently of any CV and can be compared against multiple CVs.
+_Avoid_: Job application, Vacancy application
 
+**Structured JD**:
+The organized representation of a JD's stated information, preserving supporting excerpts, uncertainty, and alternative qualifications.
+_Avoid_: Match score, Candidate assessment
+
+**JD Requirement**:
+A qualification or condition stated in a JD, classified as required, preferred, or unspecified according to the ad's wording. An unstated qualification is absent rather than an inferred requirement.
+_Avoid_: Inferred prerequisite, Matching weight
+
+**JD Source**:
+The retained text supplied for a JD or imported from its web page, together with the source URL when applicable. It provides the evidence against which the Structured JD is reviewed.
+_Avoid_: Live ad, Structured JD
+
+**JD Review**:
+The User's examination and correction of a Structured JD against its JD Source. Confirmation marks the JD as ready for future CV matching.
+_Avoid_: Match approval, Application approval
+
+**JD Replacement**:
+A proposed Structured JD and its associated JD Source produced by reprocessing, which the User reviews before they replace existing content and source together.
+_Avoid_: Automatic overwrite, New job opportunity
