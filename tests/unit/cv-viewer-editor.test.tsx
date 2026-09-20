@@ -1,6 +1,6 @@
 import React from 'react'
-import { describe, expect, it } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { CvViewer } from '@/modules/cvs/components/cv-viewer'
 import { CvEditor } from '@/modules/cvs/components/cv-editor'
 import { CVDocument } from '@/modules/cvs/types'
@@ -27,6 +27,7 @@ const sampleCv: CVDocument = {
       sectionTitle: 'Work Experience',
       items: [
         {
+          _key: 'work_1',
           company: 'Acme Systems',
           role: 'Lead Architect',
           startDate: '2021',
@@ -42,6 +43,7 @@ const sampleCv: CVDocument = {
       sectionTitle: 'Education',
       items: [
         {
+          _key: 'edu_1',
           institution: 'MIT',
           degree: 'B.S.',
           fieldOfStudy: 'Computer Science',
@@ -103,5 +105,109 @@ describe('CvEditor Component Tests', () => {
     // Verify sections have reordered
     const section0 = screen.getByTestId('editor-section-0')
     expect(section0).toHaveTextContent(/Education/i)
+  })
+
+  it('allows editing section titles and work experience fields', () => {
+    render(<CvEditor cv={sampleCv} />)
+
+    // Section title
+    const sectionTitleInput = screen.getByTestId('section-title-input-0') as HTMLInputElement
+    expect(sectionTitleInput.value).toBe('Work Experience')
+    fireEvent.change(sectionTitleInput, { target: { value: 'Professional Career' } })
+    expect(sectionTitleInput.value).toBe('Professional Career')
+
+    // Work item company & role
+    const companyInput = screen.getByTestId('work-company-0-0') as HTMLInputElement
+    expect(companyInput.value).toBe('Acme Systems')
+    fireEvent.change(companyInput, { target: { value: 'Global Tech' } })
+    expect(companyInput.value).toBe('Global Tech')
+
+    const roleInput = screen.getByTestId('work-role-0-0') as HTMLInputElement
+    expect(roleInput.value).toBe('Lead Architect')
+    fireEvent.change(roleInput, { target: { value: 'Principal Solutions Architect' } })
+    expect(roleInput.value).toBe('Principal Solutions Architect')
+
+    // Highlights
+    const highlightsInput = screen.getByTestId('work-highlights-0-0') as HTMLTextAreaElement
+    fireEvent.change(highlightsInput, { target: { value: 'Line 1\nLine 2' } })
+    expect(highlightsInput.value).toBe('Line 1\nLine 2')
+  })
+
+  it('allows adding and removing items within a section', () => {
+    render(<CvEditor cv={sampleCv} />)
+
+    // Add another experience item
+    const addExpBtn = screen.getByTestId('add-item-to-section-0')
+    fireEvent.click(addExpBtn)
+
+    // Now there should be item 1
+    const newCompanyInput = screen.getByTestId('work-company-0-1') as HTMLInputElement
+    expect(newCompanyInput).toBeInTheDocument()
+    fireEvent.change(newCompanyInput, { target: { value: 'Second Company' } })
+    expect(newCompanyInput.value).toBe('Second Company')
+
+    // Remove the first item
+    const removeBtn = screen.getByTestId('remove-item-0-0')
+    fireEvent.click(removeBtn)
+
+    // The remaining item should now be at index 0 and have company 'Second Company'
+    const remainingCompany = screen.getByTestId('work-company-0-0') as HTMLInputElement
+    expect(remainingCompany.value).toBe('Second Company')
+  })
+
+  it('allows adding a new section from the dropdown and editing it', () => {
+    render(<CvEditor cv={sampleCv} />)
+
+    // Select 'skillsSection' from the dropdown
+    const addSectionSelect = screen.getByTestId('add-section-select') as HTMLSelectElement
+    fireEvent.change(addSectionSelect, { target: { value: 'skillsSection' } })
+
+    // Click Add Section
+    const addSectionBtn = screen.getByTestId('add-section-button')
+    fireEvent.click(addSectionBtn)
+
+    // New section is at index 2
+    const section2 = screen.getByTestId('editor-section-2')
+    expect(section2).toBeInTheDocument()
+
+    // Add a skill group
+    const addSkillGroupBtn = screen.getByTestId('add-item-to-section-2')
+    fireEvent.click(addSkillGroupBtn)
+
+    // Set category name and skills
+    const categoryInput = screen.getByTestId('skill-category-2-0') as HTMLInputElement
+    fireEvent.change(categoryInput, { target: { value: 'Backend' } })
+    expect(categoryInput.value).toBe('Backend')
+
+    const skillListInput = screen.getByTestId('skill-list-2-0') as HTMLInputElement
+    fireEvent.change(skillListInput, { target: { value: 'Go, Node.js, PostgreSQL' } })
+    expect(skillListInput.value).toBe('Go, Node.js, PostgreSQL')
+  })
+
+  it('saves CV changes via PATCH request', async () => {
+    const mockUpdatedCv = { ...sampleCv, title: 'Updated Title' }
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ cv: mockUpdatedCv }),
+    })
+    global.fetch = fetchMock
+
+    const onSaveSuccess = vi.fn()
+    render(<CvEditor cv={sampleCv} onSaveSuccess={onSaveSuccess} />)
+
+    const saveButton = screen.getByTestId('save-cv-button')
+    fireEvent.click(saveButton)
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        `/api/cvs/${sampleCv._id}`,
+        expect.objectContaining({
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+    })
+
+    expect(onSaveSuccess).toHaveBeenCalledWith(mockUpdatedCv)
   })
 })

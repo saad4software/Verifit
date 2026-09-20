@@ -72,8 +72,15 @@ async function page(
           'Accept-Encoding': 'identity',
           'User-Agent': 'SanityCV/1.0',
         },
-        lookup: (_hostname, _options, callback) =>
-          callback(null, address.address, address.family),
+        lookup: (_hostname, options, callback) => {
+          const cb = typeof options === 'function' ? options : callback
+          const opts = typeof options === 'object' ? options : null
+          if (opts?.all) {
+            cb(null, [{ address: address.address, family: address.family }])
+          } else {
+            cb(null, address.address, address.family)
+          }
+        },
       },
       (response) => {
         const status = response.statusCode ?? 0

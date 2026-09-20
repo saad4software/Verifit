@@ -9,12 +9,41 @@ import {
   Loader2,
   CheckCircle2,
   AlertCircle,
+  Plus,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react'
-import { CVDocument } from '../types'
+import {
+  FormField,
+  FormTextarea,
+  generateKey,
+  inputClass,
+  labelClass,
+} from '@/modules/core'
+import { CVDocument, CVSection } from '../types'
+import {
+  WorkExperienceEditor,
+  EducationEditor,
+  SkillsEditor,
+  ProjectsEditor,
+  CertificationsEditor,
+  LanguagesEditor,
+  CustomEditor,
+} from './section-editors'
 
 interface CvEditorProps {
   cv: CVDocument
   onSaveSuccess?: (updated: CVDocument) => void
+}
+
+const SECTION_TYPE_LABELS: Record<CVSection['_type'], string> = {
+  workExperienceSection: '💼 Work Experience',
+  educationSection: '🎓 Education',
+  skillsSection: '✨ Skills',
+  projectsSection: '📁 Projects',
+  certificationsSection: '🏆 Certifications',
+  languagesSection: '🌐 Languages',
+  customSection: '📄 Custom Section',
 }
 
 export function CvEditor({ cv, onSaveSuccess }: CvEditorProps) {
@@ -22,6 +51,15 @@ export function CvEditor({ cv, onSaveSuccess }: CvEditorProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [selectedNewType, setSelectedNewType] = useState<CVSection['_type']>('workExperienceSection')
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({})
+
+  const toggleSectionCollapse = (keyOrIdx: string) => {
+    setCollapsedSections((prev) => ({
+      ...prev,
+      [keyOrIdx]: !prev[keyOrIdx],
+    }))
+  }
 
   const handlePersonalInfoChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -53,6 +91,91 @@ export function CvEditor({ cv, onSaveSuccess }: CvEditorProps) {
     setFormData((prev) => ({
       ...prev,
       sections: (prev.sections || []).filter((_, i) => i !== index),
+    }))
+  }
+
+  const handleSectionChange = (index: number, updated: CVSection) => {
+    setFormData((prev) => {
+      const nextSections = [...(prev.sections || [])]
+      nextSections[index] = updated
+      return { ...prev, sections: nextSections }
+    })
+  }
+
+  const handleSectionTitleChange = (index: number, title: string) => {
+    setFormData((prev) => {
+      const nextSections = [...(prev.sections || [])]
+      nextSections[index] = { ...nextSections[index], sectionTitle: title }
+      return { ...prev, sections: nextSections }
+    })
+  }
+
+  const handleAddSection = () => {
+    const key = generateKey('sec')
+    let newSection: CVSection
+
+    switch (selectedNewType) {
+      case 'workExperienceSection':
+        newSection = {
+          _type: 'workExperienceSection',
+          _key: key,
+          sectionTitle: 'Work Experience',
+          items: [],
+        }
+        break
+      case 'educationSection':
+        newSection = {
+          _type: 'educationSection',
+          _key: key,
+          sectionTitle: 'Education',
+          items: [],
+        }
+        break
+      case 'skillsSection':
+        newSection = {
+          _type: 'skillsSection',
+          _key: key,
+          sectionTitle: 'Skills',
+          groups: [],
+        }
+        break
+      case 'projectsSection':
+        newSection = {
+          _type: 'projectsSection',
+          _key: key,
+          sectionTitle: 'Projects',
+          items: [],
+        }
+        break
+      case 'certificationsSection':
+        newSection = {
+          _type: 'certificationsSection',
+          _key: key,
+          sectionTitle: 'Certifications',
+          items: [],
+        }
+        break
+      case 'languagesSection':
+        newSection = {
+          _type: 'languagesSection',
+          _key: key,
+          sectionTitle: 'Languages',
+          items: [],
+        }
+        break
+      case 'customSection':
+        newSection = {
+          _type: 'customSection',
+          _key: key,
+          sectionTitle: 'Additional Experience',
+          items: [],
+        }
+        break
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      sections: [...(prev.sections || []), newSection],
     }))
   }
 
@@ -169,103 +292,61 @@ export function CvEditor({ cv, onSaveSuccess }: CvEditorProps) {
         </h3>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
-              Full Name
-            </label>
-            <input
-              type="text"
-              data-testid="edit-fullname-input"
-              value={formData.personalInfo?.fullName || ''}
-              onChange={(e) => handlePersonalInfoChange('fullName', e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
+          <FormField
+            label="Full Name"
+            data-testid="edit-fullname-input"
+            value={formData.personalInfo?.fullName || ''}
+            onChange={(e) => handlePersonalInfoChange('fullName', e.target.value)}
+          />
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
-              Headline / Title
-            </label>
-            <input
-              type="text"
-              data-testid="edit-headline-input"
-              value={formData.personalInfo?.headline || ''}
-              onChange={(e) => handlePersonalInfoChange('headline', e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
+          <FormField
+            label="Headline / Title"
+            data-testid="edit-headline-input"
+            value={formData.personalInfo?.headline || ''}
+            onChange={(e) => handlePersonalInfoChange('headline', e.target.value)}
+          />
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
-              Email
-            </label>
-            <input
-              type="email"
-              value={formData.personalInfo?.email || ''}
-              onChange={(e) => handlePersonalInfoChange('email', e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
+          <FormField
+            label="Email"
+            type="email"
+            value={formData.personalInfo?.email || ''}
+            onChange={(e) => handlePersonalInfoChange('email', e.target.value)}
+          />
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
-              Phone
-            </label>
-            <input
-              type="text"
-              value={formData.personalInfo?.phone || ''}
-              onChange={(e) => handlePersonalInfoChange('phone', e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
+          <FormField
+            label="Phone"
+            type="text"
+            value={formData.personalInfo?.phone || ''}
+            onChange={(e) => handlePersonalInfoChange('phone', e.target.value)}
+          />
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
-              Location
-            </label>
-            <input
-              type="text"
-              value={formData.personalInfo?.location || ''}
-              onChange={(e) => handlePersonalInfoChange('location', e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
+          <FormField
+            label="Location"
+            type="text"
+            value={formData.personalInfo?.location || ''}
+            onChange={(e) => handlePersonalInfoChange('location', e.target.value)}
+          />
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
-              Portfolio Website
-            </label>
-            <input
-              type="url"
-              value={formData.personalInfo?.website || ''}
-              onChange={(e) => handlePersonalInfoChange('website', e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
+          <FormField
+            label="Portfolio Website"
+            type="url"
+            value={formData.personalInfo?.website || ''}
+            onChange={(e) => handlePersonalInfoChange('website', e.target.value)}
+          />
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
-              LinkedIn URL
-            </label>
-            <input
-              type="url"
-              value={formData.personalInfo?.linkedin || ''}
-              onChange={(e) => handlePersonalInfoChange('linkedin', e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
+          <FormField
+            label="LinkedIn URL"
+            type="url"
+            value={formData.personalInfo?.linkedin || ''}
+            onChange={(e) => handlePersonalInfoChange('linkedin', e.target.value)}
+          />
 
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">
-              GitHub URL
-            </label>
-            <input
-              type="url"
-              value={formData.personalInfo?.github || ''}
-              onChange={(e) => handlePersonalInfoChange('github', e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
+          <FormField
+            label="GitHub URL"
+            type="url"
+            value={formData.personalInfo?.github || ''}
+            onChange={(e) => handlePersonalInfoChange('github', e.target.value)}
+          />
         </div>
       </div>
 
@@ -274,97 +355,185 @@ export function CvEditor({ cv, onSaveSuccess }: CvEditorProps) {
         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-2">
           Professional Summary
         </h3>
-        <textarea
+        <FormTextarea
+          label=""
           rows={4}
           data-testid="edit-summary-input"
           value={formData.summary || ''}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, summary: e.target.value }))
           }
-          className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
         />
       </div>
 
-      {/* Modular Reorderable Sections */}
+      {/* Modular Sections */}
       <div className="space-y-4">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-          Modular Sections ({formData.sections?.length || 0})
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+            Modular Sections ({formData.sections?.length || 0})
+          </h3>
+        </div>
 
-        {formData.sections?.map((section, idx) => (
-          <div
-            key={section._key || idx}
-            data-testid={`editor-section-${idx}`}
-            className="rounded-2xl border border-slate-200/80 bg-white/80 p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900/80"
-          >
-            {/* Section Header Controls */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
-              <span className="text-sm font-bold text-slate-900 dark:text-white">
-                {section._type === 'workExperienceSection' && '💼 Work Experience'}
-                {section._type === 'educationSection' && '🎓 Education'}
-                {section._type === 'skillsSection' && '✨ Skills'}
-                {section._type === 'projectsSection' && '📁 Projects'}
-                {section._type === 'certificationsSection' && '🏆 Certifications'}
-                {section._type === 'languagesSection' && '🌐 Languages'}
-                {section._type === 'customSection' && `📄 ${section.sectionTitle}`}
-              </span>
+        {formData.sections?.map((section, idx) => {
+          const sectionKey = section._key || String(idx)
+          const isCollapsed = collapsedSections[sectionKey] || false
 
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  data-testid={`move-up-section-${idx}`}
-                  onClick={() => handleMoveSection(idx, 'up')}
-                  disabled={idx === 0}
-                  className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 disabled:opacity-30 dark:hover:bg-slate-800"
-                  title="Move section up"
-                >
-                  <ArrowUp className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  data-testid={`move-down-section-${idx}`}
-                  onClick={() => handleMoveSection(idx, 'down')}
-                  disabled={idx === (formData.sections?.length || 0) - 1}
-                  className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 disabled:opacity-30 dark:hover:bg-slate-800"
-                  title="Move section down"
-                >
-                  <ArrowDown className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  data-testid={`remove-section-${idx}`}
-                  onClick={() => handleRemoveSection(idx)}
-                  className="rounded-lg p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
-                  title="Remove section"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+          return (
+            <div
+              key={sectionKey}
+              data-testid={`editor-section-${idx}`}
+              className="rounded-2xl border border-slate-200/80 bg-white/80 p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900/80"
+            >
+              {/* Section Header Controls */}
+              <div className="flex flex-col gap-3 pb-3 border-b border-slate-100 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
+                <div className="flex flex-1 items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionCollapse(sectionKey)}
+                    className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                    title={isCollapsed ? 'Expand section' : 'Collapse section'}
+                  >
+                    {isCollapsed ? (
+                      <ChevronDown className="h-4 w-4" />
+                    ) : (
+                      <ChevronUp className="h-4 w-4" />
+                    )}
+                  </button>
+
+                  <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                    {SECTION_TYPE_LABELS[section._type]}
+                  </span>
+
+                  <input
+                    type="text"
+                    data-testid={`section-title-input-${idx}`}
+                    value={section.sectionTitle || ''}
+                    onChange={(e) => handleSectionTitleChange(idx, e.target.value)}
+                    placeholder="Section Title"
+                    className="flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm font-bold text-slate-900 hover:border-slate-200 focus:border-indigo-500 focus:bg-white focus:outline-none dark:text-white dark:hover:border-slate-800 dark:focus:bg-slate-950"
+                  />
+                </div>
+
+                <div className="flex items-center gap-1 self-end sm:self-auto">
+                  <button
+                    type="button"
+                    data-testid={`move-up-section-${idx}`}
+                    onClick={() => handleMoveSection(idx, 'up')}
+                    disabled={idx === 0}
+                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 disabled:opacity-30 dark:hover:bg-slate-800"
+                    title="Move section up"
+                  >
+                    <ArrowUp className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    data-testid={`move-down-section-${idx}`}
+                    onClick={() => handleMoveSection(idx, 'down')}
+                    disabled={idx === (formData.sections?.length || 0) - 1}
+                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 disabled:opacity-30 dark:hover:bg-slate-800"
+                    title="Move section down"
+                  >
+                    <ArrowDown className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    data-testid={`remove-section-${idx}`}
+                    onClick={() => handleRemoveSection(idx)}
+                    className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
+                    title="Remove section"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Section items overview */}
-            <div className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-              {section._type === 'workExperienceSection' && (
-                <span>
-                  {section.items?.length || 0} experiences listed. (
-                  {section.items?.map((item) => item.company).join(', ')})
-                </span>
-              )}
-              {section._type === 'educationSection' && (
-                <span>
-                  {section.items?.length || 0} education items. (
-                  {section.items?.map((item) => item.institution).join(', ')})
-                </span>
-              )}
-              {section._type === 'skillsSection' && (
-                <span>
-                  {section.groups?.length || 0} skill groups with{' '}
-                  {section.groups?.flatMap((g) => g.skills).length || 0} skills.
-                </span>
+              {/* Collapsible Content Editor */}
+              {!isCollapsed && (
+                <div className="mt-2">
+                  {section._type === 'workExperienceSection' && (
+                    <WorkExperienceEditor
+                      section={section}
+                      sectionIdx={idx}
+                      onChange={(updated) => handleSectionChange(idx, updated)}
+                    />
+                  )}
+                  {section._type === 'educationSection' && (
+                    <EducationEditor
+                      section={section}
+                      sectionIdx={idx}
+                      onChange={(updated) => handleSectionChange(idx, updated)}
+                    />
+                  )}
+                  {section._type === 'skillsSection' && (
+                    <SkillsEditor
+                      section={section}
+                      sectionIdx={idx}
+                      onChange={(updated) => handleSectionChange(idx, updated)}
+                    />
+                  )}
+                  {section._type === 'projectsSection' && (
+                    <ProjectsEditor
+                      section={section}
+                      sectionIdx={idx}
+                      onChange={(updated) => handleSectionChange(idx, updated)}
+                    />
+                  )}
+                  {section._type === 'certificationsSection' && (
+                    <CertificationsEditor
+                      section={section}
+                      sectionIdx={idx}
+                      onChange={(updated) => handleSectionChange(idx, updated)}
+                    />
+                  )}
+                  {section._type === 'languagesSection' && (
+                    <LanguagesEditor
+                      section={section}
+                      sectionIdx={idx}
+                      onChange={(updated) => handleSectionChange(idx, updated)}
+                    />
+                  )}
+                  {section._type === 'customSection' && (
+                    <CustomEditor
+                      section={section}
+                      sectionIdx={idx}
+                      onChange={(updated) => handleSectionChange(idx, updated)}
+                    />
+                  )}
+                </div>
               )}
             </div>
-          </div>
-        ))}
+          )
+        })}
+
+        {/* Add New Section Bar */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center rounded-2xl border border-dashed border-slate-300/80 bg-white/40 p-4 dark:border-slate-800/80 dark:bg-slate-900/40">
+          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+            Add Section:
+          </span>
+          <select
+            data-testid="add-section-select"
+            value={selectedNewType}
+            onChange={(e) => setSelectedNewType(e.target.value as CVSection['_type'])}
+            className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+          >
+            <option value="workExperienceSection">💼 Work Experience</option>
+            <option value="educationSection">🎓 Education</option>
+            <option value="skillsSection">✨ Skills</option>
+            <option value="projectsSection">📁 Projects</option>
+            <option value="certificationsSection">🏆 Certifications</option>
+            <option value="languagesSection">🌐 Languages</option>
+            <option value="customSection">📄 Custom Section</option>
+          </select>
+          <button
+            type="button"
+            data-testid="add-section-button"
+            onClick={handleAddSection}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Add Section</span>
+          </button>
+        </div>
       </div>
     </form>
   )
