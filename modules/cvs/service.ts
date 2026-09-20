@@ -1,3 +1,4 @@
+import { scheduleMatching } from '@/modules/matching/scheduling'
 import { getServerSanityClient } from '@/sanity/lib/server-client'
 import { extractRawTextFromBuffer } from './parser'
 import { executeCvStructuringAgent } from './agent'
@@ -110,7 +111,9 @@ export async function processCvBackground(
   cvId: string,
   rawText: string
 ): Promise<CVDocument> {
-  return await executeCvStructuringAgent(cvId, rawText)
+  const cv = await executeCvStructuringAgent(cvId, rawText)
+  scheduleMatching(cv.userId)
+  return cv
 }
 
 /**
@@ -203,6 +206,7 @@ export async function updateCv(
   delete safePatch._id
 
   const updated = await client.patch(cvId).set(safePatch).commit()
+  scheduleMatching(userId)
   return updated as unknown as CVDocument
 }
 
@@ -212,5 +216,9 @@ export async function updateCv(
 export async function deleteCv(cvId: string, userId: string): Promise<void> {
   await getCvById(cvId, userId) // Tenancy check
   const client = getServerSanityClient()
+  await client.delete({
+    query: '*[_type == "cvMatch" && userId == $userId && cv._ref == $id]',
+    params: { userId, id: cvId },
+  })
   await client.delete(cvId)
 }

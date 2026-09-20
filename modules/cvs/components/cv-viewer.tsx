@@ -30,7 +30,7 @@ export function CvViewer({ cv }: CvViewerProps) {
       className="mx-auto w-full max-w-4xl rounded-3xl border border-slate-200/80 bg-white p-8 shadow-xl print:border-none print:shadow-none sm:p-12 dark:border-slate-800/80 dark:bg-slate-900"
     >
       {/* CV Header: Personal Info */}
-      <div className="border-b border-slate-100 pb-6 text-center sm:text-left dark:border-slate-800">
+      <div id="cv-header" className="border-b border-slate-100 pb-6 text-center sm:text-left dark:border-slate-800">
         <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-4xl">
           {p.fullName || cv.title || 'Untitled CV'}
         </h1>
@@ -115,7 +115,7 @@ export function CvViewer({ cv }: CvViewerProps) {
 
       {/* Summary */}
       {cv.summary && (
-        <div className="mt-6 border-b border-slate-100 pb-6 dark:border-slate-800">
+        <div id="cv-summary" className="mt-6 border-b border-slate-100 pb-6 dark:border-slate-800">
           <h2 className="text-sm font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-2">
             Professional Summary
           </h2>
@@ -130,7 +130,7 @@ export function CvViewer({ cv }: CvViewerProps) {
         {cv.sections?.map((section, idx) => {
           if (section._type === 'workExperienceSection') {
             return (
-              <section key={section._key || idx} className="space-y-4">
+              <section id={`cv-section-${idx}`} key={section._key || idx} className="space-y-4">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-1.5 dark:border-slate-800">
                   <Briefcase className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
@@ -185,7 +185,7 @@ export function CvViewer({ cv }: CvViewerProps) {
 
           if (section._type === 'educationSection') {
             return (
-              <section key={section._key || idx} className="space-y-4">
+              <section id={`cv-section-${idx}`} key={section._key || idx} className="space-y-4">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-1.5 dark:border-slate-800">
                   <GraduationCap className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
@@ -227,7 +227,7 @@ export function CvViewer({ cv }: CvViewerProps) {
 
           if (section._type === 'skillsSection') {
             return (
-              <section key={section._key || idx} className="space-y-3">
+              <section id={`cv-section-${idx}`} key={section._key || idx} className="space-y-3">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-1.5 dark:border-slate-800">
                   <Sparkles className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
@@ -260,7 +260,7 @@ export function CvViewer({ cv }: CvViewerProps) {
 
           if (section._type === 'projectsSection') {
             return (
-              <section key={section._key || idx} className="space-y-4">
+              <section id={`cv-section-${idx}`} key={section._key || idx} className="space-y-4">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-1.5 dark:border-slate-800">
                   <FolderGit2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
@@ -326,7 +326,7 @@ export function CvViewer({ cv }: CvViewerProps) {
 
           if (section._type === 'certificationsSection') {
             return (
-              <section key={section._key || idx} className="space-y-3">
+              <section id={`cv-section-${idx}`} key={section._key || idx} className="space-y-3">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-1.5 dark:border-slate-800">
                   <Award className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
@@ -355,7 +355,7 @@ export function CvViewer({ cv }: CvViewerProps) {
 
           if (section._type === 'languagesSection') {
             return (
-              <section key={section._key || idx} className="space-y-3">
+              <section id={`cv-section-${idx}`} key={section._key || idx} className="space-y-3">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-1.5 dark:border-slate-800">
                   <LanguagesIcon className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
@@ -381,7 +381,7 @@ export function CvViewer({ cv }: CvViewerProps) {
 
           if (section._type === 'customSection') {
             return (
-              <section key={section._key || idx} className="space-y-3">
+              <section id={`cv-section-${idx}`} key={section._key || idx} className="space-y-3">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-1.5 dark:border-slate-800">
                   <Sparkles className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">

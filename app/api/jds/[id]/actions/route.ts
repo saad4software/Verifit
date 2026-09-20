@@ -7,6 +7,7 @@ import {
   replacementJd,
 } from '@/modules/jds/service'
 import { scheduleJd } from '@/modules/jds/scheduling'
+import { scheduleMatching } from '@/modules/matching/scheduling'
 const Input = z
   .object({
     action: z.enum([
@@ -47,6 +48,7 @@ export async function POST(
       input.action === 'reject'
     ) {
       const jd = await replacementJd(id, userId, input.revision, input.action)
+      if (input.action === 'accept') scheduleMatching(userId, id)
       return Response.json({
         jd:
           input.action === 'reprocess' || input.action === 'refetch'
@@ -54,7 +56,9 @@ export async function POST(
             : jd,
       })
     }
-    return Response.json({ jd: await reviewJd(id, userId, input) })
+    const jd = await reviewJd(id, userId, input)
+    if (jd.readiness === 'ready') scheduleMatching(userId, id)
+    return Response.json({ jd })
   })
 }
 

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { flushSync } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft,
@@ -20,6 +21,7 @@ import type { Jd } from '../schema'
 import { ContentEditor } from './content-editor'
 import { JdViewer } from './jd-viewer'
 import { JdProgressStepper } from './jd-progress-stepper'
+import { MatchesPanel } from '@/modules/matching/components/matches-panel'
 
 export function JdDetail({ initialJd }: { initialJd: Jd }) {
   const router = useRouter()
@@ -117,6 +119,11 @@ export function JdDetail({ initialJd }: { initialJd: Jd }) {
     setError('')
   }
 
+  function handlePrint() {
+    flushSync(() => setActiveTab('preview'))
+    window.print()
+  }
+
   function closeDelete() {
     setDeleting(false)
     deleteButton.current?.focus()
@@ -139,7 +146,8 @@ export function JdDetail({ initialJd }: { initialJd: Jd }) {
   }
 
   return (
-    <div className="space-y-6 text-slate-900 dark:text-slate-100">
+    <div className="jd-detail space-y-6 text-slate-900 dark:text-slate-100">
+      <style media="print">{`@page { margin: 0; }`}</style>
       {/* Top Breadcrumb & Actions Bar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <div className="flex items-center gap-3">
@@ -208,7 +216,7 @@ export function JdDetail({ initialJd }: { initialJd: Jd }) {
             <button
               type="button"
               data-testid="print-jd-button"
-              onClick={() => window.print()}
+              onClick={handlePrint}
               className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
               title="Print or Export to PDF"
             >
@@ -360,7 +368,7 @@ export function JdDetail({ initialJd }: { initialJd: Jd }) {
       {draft ? (
         activeTab === 'preview' ? (
           /* PREVIEW VIEW: Clean, centered document view like CV Details Page; Retained source is hidden */
-          <div className="space-y-6">
+          <div className="jd-print-preview space-y-6">
             <JdViewer content={draft} />
 
             {/* In-preview actions when review is pending */}
@@ -691,6 +699,8 @@ export function JdDetail({ initialJd }: { initialJd: Jd }) {
           </section>
         )
       )}
+
+      {!replacement && <MatchesPanel key={jd._id + jd._rev} jdId={jd._id} revision={jd._rev} />}
 
       {/* Accessible Deletion Confirmation Dialog */}
       {deleting && (

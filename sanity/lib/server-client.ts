@@ -23,7 +23,7 @@ export interface CvSanityClient {
     unset: (fields: string[]) => unknown
     commit: (options?: unknown) => Promise<unknown>
   }
-  delete(id: string, options?: unknown): Promise<unknown>
+  delete(id: string | { query: string; params: Record<string, string> }, options?: unknown): Promise<unknown>
 }
 
 /**
@@ -123,9 +123,13 @@ export class MockSanityClient implements CvSanityClient {
     }
   }
 
-  async delete(id: string, _options?: unknown): Promise<{ results: { id: string }[] }> {
-    this.documents.delete(id)
-    return { results: [{ id }] }
+  async delete(selection: string | { query: string; params: Record<string, string> }, _options?: unknown): Promise<{ results: { id: string }[] }> {
+    const ids = typeof selection === 'string' ? [selection] : [...this.documents.values()]
+      .filter(doc => doc._type === 'cvMatch' && doc.userId === selection.params.userId &&
+        (doc.cv as { _ref?: string } | undefined)?._ref === selection.params.id)
+      .map(doc => doc._id)
+    ids.forEach(id => this.documents.delete(id))
+    return { results: ids.map(id => ({ id })) }
   }
 }
 

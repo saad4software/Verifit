@@ -2,6 +2,7 @@ import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { CvViewer } from '@/modules/cvs/components/cv-viewer'
+import { CvDetailView } from '@/modules/cvs/components/cv-detail-view'
 import { CvEditor } from '@/modules/cvs/components/cv-editor'
 import { CVDocument } from '@/modules/cvs/types'
 
@@ -209,5 +210,24 @@ describe('CvEditor Component Tests', () => {
     })
 
     expect(onSaveSuccess).toHaveBeenCalledWith(mockUpdatedCv)
+  })
+})
+
+
+describe('CV detail printing', () => {
+  it('renders the CV preview before opening print from edit mode', () => {
+    const print = vi.spyOn(window, 'print').mockImplementation(() => {
+      expect(screen.getByTestId('cv-viewer')).toBeInTheDocument()
+      expect(screen.queryByTestId('cv-editor')).not.toBeInTheDocument()
+    })
+    try {
+      render(<CvDetailView initialCv={sampleCv} />)
+      fireEvent.click(screen.getByTestId('toggle-edit-mode'))
+      expect(screen.queryByTestId('cv-viewer')).not.toBeInTheDocument()
+      fireEvent.click(screen.getByTestId('print-cv-button'))
+      expect(print).toHaveBeenCalledOnce()
+    } finally {
+      print.mockRestore()
+    }
   })
 })

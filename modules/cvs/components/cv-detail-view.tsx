@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { flushSync } from 'react-dom'
 import {
   ArrowLeft,
   Edit3,
@@ -77,14 +78,17 @@ export function CvDetailView({ initialCv }: CvDetailViewProps) {
   }
 
   const handlePrint = () => {
+    flushSync(() => setActiveTab('preview'))
     window.print()
   }
 
   return (
     <div
       data-testid="cv-detail-view"
-      className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8"
+      className="cv-detail mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8"
     >
+      {/* Only mount this page rule on the CV detail page. */}
+      <style media="print">{`@page { margin: 0; }`}</style>
       {/* Navigation and Actions Bar */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <div className="flex items-center gap-3">

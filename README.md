@@ -177,3 +177,74 @@ To build and run the optimized production bundle:
 npm run build
 npm run start
 ```
+
+## JD–CV matching
+
+Every confirmed JD has a **CV matches** panel. CVs are ranked by documented
+requirement coverage; expand a result to see its arithmetic, required gaps,
+original JD excerpts, and validated quotes linked to the current CV sections.
+
+### Enable matching
+
+1. Use the existing authenticated Sanity write token and dataset.
+2. Deploy the updated Studio schema with `npx sanity schemas deploy --tag matching-v1`.
+3. Set `SANITY_MATCH_AGENT_SCHEMA_ID` in the server environment to the returned
+   schema ID (also available through `npx sanity schemas list`).
+4. Restart the app. Open a confirmed JD to assess existing CVs.
+
+Keep the dataset private when storing personal CVs. The application enforces
+ownership on every matching read and write; browser requests never receive the
+Sanity token. A public dataset's direct API access is outside that application
+boundary.
+
+### Scoring rubric (requirements-v1)
+
+- Required = 3 points, unspecified importance = 2, preferred = 1.
+- Met earns 100% of the weight; partial earns 50%; not evidenced and explicit
+  mismatch earn 0%. The final score is the rounded earned/possible percentage.
+- No requirements means no numeric score.
+- AND groups sum their members. OR groups use the best child's earned/possible
+  ratio, weighted by the largest child's possible points. Alternatives are
+  counted once. This also supports nested groups.
+- Nested experience is assessed within its parent and its credit is capped by
+  the parent's credit; nested years must never be added to total years.
+- Required gaps are reported separately, respecting satisfied alternatives.
+  Evidence coverage is the percentage of individual requirements with evidence,
+  independent of scoring weights.
+- Only the explicit requirement list is scored. Other JD fields provide context.
+  A score is documented coverage, not a probability of success.
+
+Sanity Agent Actions assesses each pair with one schema-constrained, no-write
+generation request. Application code requires exactly one assessment per
+requirement, checks that every quote occurs in its cited current CV field, and
+calculates the score. Exact quote validation establishes provenance; it does
+not prove that the model interpreted the quote correctly. Human review remains
+necessary, especially for experience durations and ambiguous qualifications.
+
+### Processing and caching
+
+Results live in separate `cvMatch` documents, one per user/JD/CV pair.
+Fingerprints include scoring version, matching schema ID, current JD content and
+source text, and the CV fields assessed. Display-only changes such as renaming a
+CV do not invalidate scores. Current employment is refreshed monthly for duration
+calculations. Pending replacements do not replace the confirmed JD until accepted.
+
+Confirming a JD, importing a CV, or saving CV edits schedules background matching.
+A revision-checked, five-minute lease limits work to one worker per JD across
+tabs/processes; each worker evaluates at most two CVs concurrently. Failed pairs
+require the explicit retry button, while edited inputs automatically become
+pending. Failed assessment attempts never produce a numeric score. Deleting a
+source removes its saved match records; strong references prevent a late worker
+from publishing a match for an already deleted source.
+
+Work uses Next.js `after()` with a 300-second route limit and a bounded work
+window. This is resumable background processing, not an external durable job
+runner: a very large backlog or platform interruption may leave pending pairs
+until the JD panel is opened again. The panel continues pending batches, recovers
+expired leases, and polls for changes. For guaranteed unattended completion at
+large scale, move the same lease/worker logic to a durable queue or scheduled
+worker. Semantic embeddings are intentionally not required by this version.
+
+Validation covers scoring, nested alternatives, fabricated evidence, ownership,
+caching, concurrency, interrupted work, retry behavior, and the matching UI:
+`npm test`, `npx tsc --noEmit`, and `npx sanity schemas validate`.

@@ -24,8 +24,8 @@ export default async function JdPage({
     throw error
   }
   return (
-    <div className="flex-1 py-6">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div className="flex-1 py-6 print:py-0">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 print:max-w-none print:px-0">
         <JdDetail initialJd={jd} />
       </div>
     </div>

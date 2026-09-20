@@ -24,3 +24,73 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@media print {
+  .jd-detail > :not(.jd-print-preview) {
+    display: none;
+  }
+
+  .jd-detail > .jd-print-preview {
+    margin: 0;
+  }
+
+  html:has(:is(.cv-detail, .jd-detail)),
+  body:has(:is(.cv-detail, .jd-detail)) {
+    height: auto;
+    min-height: 0;
+    background: white;
+    color: #171717;
+  }
+
+  body:has(:is(.cv-detail, .jd-detail)) {
+    display: block;
+  }
+
+  body:has(:is(.cv-detail, .jd-detail)) > header {
+    display: none;
+  }
+
+  body:has(:is(.cv-detail, .jd-detail)) > main {
+    display: block;
+  }
+
+  :is(.cv-detail, .jd-detail) {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Move margins into the document so browser running headers have no room.
+     Clone padding on each printed fragment to preserve multipage whitespace. */
+  :is(.cv-detail, .jd-detail) :is([data-testid="cv-viewer"], [data-testid="jd-viewer"]) {
+    max-width: none;
+    margin: 0;
+    padding: 12mm;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  :is(.cv-detail, .jd-detail) :is([data-testid="cv-viewer"], [data-testid="jd-viewer"]),
+  :is(.cv-detail, .jd-detail) :is([data-testid="cv-viewer"], [data-testid="jd-viewer"]) * {
+    background: white !important;
+    color: #171717 !important;
+    border-color: #ddd !important;
+    box-shadow: none !important;
+  }
+
+  :is(.cv-detail, .jd-detail) h1,
+  :is(.cv-detail, .jd-detail) h2,
+  :is(.cv-detail, .jd-detail) h3,
+  :is(.cv-detail, .jd-detail) h4 {
+    break-after: avoid;
+  }
+
+  :is(.cv-detail, .jd-detail) p,
+  :is(.cv-detail, .jd-detail) li {
+    orphans: 3;
+    widows: 3;
+  }
+}

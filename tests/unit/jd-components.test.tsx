@@ -1,9 +1,11 @@
+// Matching polling is exercised independently in matching-components.test.tsx.
 import { beforeEach, afterEach, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { JdDetail } from '@/modules/jds/components/jd-detail'
 import type { Jd } from '@/modules/jds/schema'
 import { JdImport } from '@/modules/jds/components/jd-import'
 const push = vi.hoisted(() => vi.fn())
+vi.mock('@/modules/matching/components/matches-panel', () => ({ MatchesPanel: () => null }))
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push, refresh: vi.fn() }),
 }))
@@ -212,4 +214,33 @@ it('defaults to preview, hides retained source in preview, and shows it in edit 
   fireEvent.click(screen.getByTestId('toggle-preview-mode'))
   expect(screen.getByTestId('jd-viewer')).toBeVisible()
   expect(screen.queryByTestId('retained-source-panel')).not.toBeInTheDocument()
+})
+
+
+it.each([false, true])('prints the selected JD preview from edit mode (replacement: %s)', (replacement) => {
+  const initialJd: Jd = {
+    ...jd,
+    replacement: replacement ? {
+      source: { ...jd.source, id: 'replacement' },
+      content: { fields: [{ _key: 'title', category: 'title', text: 'Replacement role', evidence: [] }], requirements: [], groups: [] },
+      findings: [], warnings: [], error: null, processing: null,
+    } : null,
+  }
+  const print = vi.spyOn(window, 'print').mockImplementation(() => {
+    expect(screen.getByTestId('jd-viewer')).toHaveTextContent('Updated draft role')
+    expect(screen.queryByTestId('retained-source-panel')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('title content')).not.toBeInTheDocument()
+  })
+  try {
+    render(<JdDetail initialJd={initialJd} />)
+    if (replacement) fireEvent.click(screen.getByRole('button', { name: 'Review replacement' }))
+    fireEvent.click(screen.getByTestId('toggle-edit-mode'))
+    fireEvent.change(screen.getByLabelText('title content'), { target: { value: 'Updated draft role' } })
+    fireEvent.click(screen.getByTestId('print-jd-button'))
+    expect(print).toHaveBeenCalledOnce()
+    fireEvent.click(screen.getByTestId('toggle-edit-mode'))
+    expect(screen.getByLabelText('title content')).toHaveValue('Updated draft role')
+  } finally {
+    print.mockRestore()
+  }
 })

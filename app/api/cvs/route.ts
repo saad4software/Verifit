@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { auth } from '@/modules/auth/server'
 import { listUserCvs } from '@/modules/cvs/service'
 
-export async function GET(_request?: NextRequest) {
+export async function GET() {
   const reqHeaders = await headers()
   const session = await auth.api.getSession({ headers: reqHeaders })
 

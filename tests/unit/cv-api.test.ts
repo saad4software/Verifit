@@ -151,8 +151,7 @@ describe('CVs API Route Integration Tests', () => {
       })
     )
 
-    const listReq = new NextRequest('http://localhost:3000/api/cvs')
-    const listRes = await listHandler(listReq)
+    const listRes = await listHandler()
     expect(listRes.status).toBe(200)
 
     const json = await listRes.json()

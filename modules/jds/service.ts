@@ -328,5 +328,10 @@ export async function replacementJd(
 }
 export async function deleteJd(id: string, userId: string): Promise<void> {
   await getJd(id, userId)
-  await getJdClient().delete(id)
+  const client = getJdClient()
+  await client.delete({
+    query: '*[userId == $userId && ((_type == "cvMatch" && jd._ref == $id) || (_type == "matchJob" && jdId == $id))]',
+    params: { userId, id },
+  })
+  await client.delete(id)
 }
