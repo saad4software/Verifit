@@ -1,6 +1,7 @@
 import { normalizeUrl, retrieveText } from './retrieval'
 import { randomUUID } from 'node:crypto'
 import { getJdClient } from '@/sanity/lib/jd-client'
+import { getServerSanityClient } from '@/sanity/lib/server-client'
 import { structureJd, validateSupport } from './agent'
 import {
   JdError,
@@ -329,6 +330,19 @@ export async function replacementJd(
 export async function deleteJd(id: string, userId: string): Promise<void> {
   await getJd(id, userId)
   const client = getJdClient()
+
+  // Guard against deleting a JD linked to an active Application
+  const serverClient = getServerSanityClient()
+  const linkedApp = await serverClient
+    .fetch<{ _id?: string; _type?: string } | null>(
+      '*[_type == "application" && userId == $userId && jd._ref == $id][0]',
+      { userId, id }
+    )
+    .catch(() => null)
+  if (linkedApp && linkedApp._type === 'application') {
+    throw new JdError('Cannot delete a Job Description that is linked to an active Job Application.', 409)
+  }
+
   await client.delete({
     query: '*[userId == $userId && ((_type == "cvMatch" && jd._ref == $id) || (_type == "matchJob" && jdId == $id))]',
     params: { userId, id },

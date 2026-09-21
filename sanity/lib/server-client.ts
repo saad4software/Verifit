@@ -35,11 +35,25 @@ export class MockSanityClient implements CvSanityClient {
   async fetch<T = unknown>(query: string, params: Record<string, unknown> = {}): Promise<T> {
     const docs = Array.from(this.documents.values())
 
-    // Filter by type
+    // Filter by type and params
     let result = docs.filter((d) => {
       if (query.includes('_type == "cv"') && d._type !== 'cv') return false
+      if (query.includes('_type == "jd"') && d._type !== 'jd') return false
+      if (query.includes('_type == "application"') && d._type !== 'application') return false
+      if (query.includes('_type == "cvMatch"') && d._type !== 'cvMatch') return false
       if (params.userId && d.userId !== params.userId) return false
-      if (params.cvId && d._id !== params.cvId) return false
+      if (d._type === 'cv' && params.cvId && d._id !== params.cvId) return false
+      if (d._type === 'application' && params.cvId) {
+        const baseRef = (d.baseCv as { _ref?: string } | undefined)?._ref
+        const tailRef = (d.tailoredCv as { _ref?: string } | undefined)?._ref
+        if (baseRef !== params.cvId && tailRef !== params.cvId) return false
+      }
+      if (d._type === 'application' && params.jdId) {
+        const jdRef = (d.jd as { _ref?: string } | undefined)?._ref
+        if (jdRef !== params.jdId) return false
+      }
+      if (params.id && d._id !== params.id) return false
+      if (query.includes('isTailored == false') && d.isTailored) return false
       return true
     })
 
@@ -126,10 +140,18 @@ export class MockSanityClient implements CvSanityClient {
   async delete(selection: string | { query: string; params: Record<string, string> }, _options?: unknown): Promise<{ results: { id: string }[] }> {
     const ids = typeof selection === 'string' ? [selection] : [...this.documents.values()]
       .filter(doc => doc._type === 'cvMatch' && doc.userId === selection.params.userId &&
-        (doc.cv as { _ref?: string } | undefined)?._ref === selection.params.id)
+        (doc.cv as { _ref?: string } | undefined)?._ref === (selection.params.cvId || selection.params.id))
       .map(doc => doc._id)
     ids.forEach(id => this.documents.delete(id))
     return { results: ids.map(id => ({ id })) }
+  }
+
+  async createIfNotExists<T extends Record<string, unknown>>(
+    doc: T
+  ): Promise<T & { _id: string; _createdAt: string }> {
+    const existing = doc._id ? this.documents.get(doc._id as string) : null
+    if (existing) return existing as unknown as T & { _id: string; _createdAt: string }
+    return this.create(doc)
   }
 }
 

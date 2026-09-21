@@ -26,6 +26,22 @@ export const cv = defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'isTailored',
+      title: 'Tailored CV',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'applicationId',
+      title: 'Application ID',
+      type: 'string',
+    }),
+    defineField({
+      name: 'sourceCvId',
+      title: 'Source Base CV ID',
+      type: 'string',
+    }),
+    defineField({
       name: 'ingestionStatus',
       title: 'Ingestion Status',
       type: 'string',

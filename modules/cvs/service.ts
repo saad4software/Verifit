@@ -23,7 +23,7 @@ export class CvAuthorizationError extends Error {
  */
 export async function listUserCvs(userId: string): Promise<CVDocument[]> {
   const client = getServerSanityClient()
-  const query = `*[_type == "cv" && userId == $userId] | order(_createdAt desc)`
+  const query = `*[_type == "cv" && userId == $userId && (!defined(isTailored) || isTailored == false)] | order(_createdAt desc)`
   const cvs = await client.fetch<CVDocument[]>(query, { userId })
   return cvs || []
 }
@@ -216,6 +216,16 @@ export async function updateCv(
 export async function deleteCv(cvId: string, userId: string): Promise<void> {
   await getCvById(cvId, userId) // Tenancy check
   const client = getServerSanityClient()
+
+  // Guard against deleting a CV linked to an active Application
+  const linkedApp = await client.fetch<{ _id?: string; _type?: string } | null>(
+    '*[_type == "application" && userId == $userId && (baseCv._ref == $id || tailoredCv._ref == $id)][0]',
+    { userId, id: cvId }
+  )
+  if (linkedApp && linkedApp._type === 'application') {
+    throw new Error('Cannot delete a CV that is linked to an active Job Application.')
+  }
+
   await client.delete({
     query: '*[_type == "cvMatch" && userId == $userId && cv._ref == $id]',
     params: { userId, id: cvId },

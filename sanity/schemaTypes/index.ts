@@ -1,5 +1,6 @@
 import { jdTypes } from './jd'
 import { matchingTypes } from './matching'
+import { applicationTypes } from './application'
 import { type SchemaTypeDefinition } from 'sanity'
 
 import { cv } from './cv'
@@ -22,6 +23,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     ...jdTypes,
     ...matchingTypes,
+    ...applicationTypes,
     cv,
     personalInfo,
     workExperienceItem,

@@ -267,3 +267,71 @@ function keyedResult(result: NonNullable<MatchRecord["result"]>) {
     })),
   };
 }
+
+export async function evaluateAndSaveMatch(
+  jd: Jd,
+  cv: CVDocument,
+  userId: string,
+): Promise<MatchRecord> {
+  const client = getJdClient();
+  const inputFingerprint = fingerprint(jd, cv);
+  const id = matchId(jd._id, cv._id, userId);
+  const previous = await client.fetch<MatchRecord | null>(
+    '*[_type == "cvMatch" && _id == $id && userId == $userId][0]',
+    { id, userId },
+  );
+  if (
+    previous &&
+    previous.fingerprint === inputFingerprint &&
+    previous.status === "complete"
+  ) {
+    return previous;
+  }
+  let result: MatchRecord["result"] = null;
+  let error: string | null = null;
+  try {
+    if (jd.content?.requirements?.length) {
+      result = await assessMatch(jd.content, cvEvidence(cv));
+    } else {
+      result = null;
+    }
+  } catch (err) {
+    error =
+      err instanceof Error
+        ? err.message
+        : "Assessment could not be verified or the AI service was unavailable.";
+  }
+  const fields = {
+    userId,
+    jd: { _type: "reference" as const, _ref: jd._id },
+    cv: { _type: "reference" as const, _ref: cv._id },
+    fingerprint: inputFingerprint,
+    scoringVersion: SCORING_VERSION,
+    status: result ? ("complete" as const) : ("failed" as const),
+    result: result ? keyedResult(result) : null,
+    error,
+    completedAt: new Date().toISOString(),
+  };
+  try {
+    if (previous) {
+      await client.patch(id).set(fields).commit();
+    } else {
+      await client.createIfNotExists({ _id: id, _type: "cvMatch", ...fields });
+    }
+  } catch (err) {
+    if (!isConflict(err)) throw err;
+  }
+  const saved = await client.fetch<MatchRecord | null>(
+    '*[_type == "cvMatch" && _id == $id && userId == $userId][0]',
+    { id, userId },
+  );
+  return (
+    saved || {
+      _id: id,
+      _rev: "",
+      _type: "cvMatch",
+      ...fields,
+    }
+  );
+}
+
