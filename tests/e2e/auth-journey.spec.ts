@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("SanityCV Auth & Account Management User Journeys (Ticket 06)", () => {
+test.describe("Verifit Auth & Account Management User Journeys (Ticket 06)", () => {
   const timestamp = Date.now();
   const testUser = {
     name: "Alex Mercer",

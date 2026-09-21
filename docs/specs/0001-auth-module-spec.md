@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-Users of SanityCV currently have no way to register, authenticate, or manage personal profiles and sessions. Without an identity layer, personalized CV tailoring, persistent CV generation histories, and secure user-specific workflows cannot exist. Additionally, the project lacks automated testing infrastructure (unit, integration, and E2E) to safeguard regressions as the application scales.
+Users of Verifit currently have no way to register, authenticate, or manage personal profiles and sessions. Without an identity layer, personalized CV tailoring, persistent CV generation histories, and secure user-specific workflows cannot exist. Additionally, the project lacks automated testing infrastructure (unit, integration, and E2E) to safeguard regressions as the application scales.
 
 ## Solution
 
@@ -10,7 +10,7 @@ Implement an encapsulated, modular authentication and account management system 
 
 ## User Stories
 
-1. As a visitor, I want to view a landing page detailing SanityCV's tailoring capabilities, so that I understand the product value before creating an account.
+1. As a visitor, I want to view a landing page detailing Verifit's tailoring capabilities, so that I understand the product value before creating an account.
 2. As a visitor, I want clear links to sign in and register in the global navigation, so that I can easily enter the authentication flow.
 3. As a visitor, I want to register for an account using my name, email address, and a secure password, so that I can establish my user identity.
 4. As a visitor, I want clear validation feedback if I enter an invalid email or an insufficiently secure password during registration, so that I can correct input mistakes immediately.

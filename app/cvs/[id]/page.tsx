@@ -6,7 +6,7 @@ import { CvDetailView } from '@/modules/cvs/components/cv-detail-view'
 import { CVDocument } from '@/modules/cvs/types'
 
 export const metadata: Metadata = {
-  title: 'CV Details — SanityCV',
+  title: 'CV Details — Verifit',
   description: 'Inspect and edit your structured CV.',
 }
 

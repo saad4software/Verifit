@@ -1,6 +1,6 @@
-# SanityCV — Tailoring Web Application
+# Verifit — Tailoring Web Application
 
-Domain model and glossary for SanityCV, an intelligent CV tailoring web application powered by Sanity CMS and local SQLite identity persistence.
+Domain model and glossary for Verifit, an intelligent CV tailoring web application powered by Sanity CMS and local SQLite identity persistence.
 
 ## Language
 
@@ -79,3 +79,36 @@ _Avoid_: Match approval, Application approval
 **JD Replacement**:
 A proposed Structured JD and its associated JD Source produced by reprocessing, which the User reviews before they replace existing content and source together.
 _Avoid_: Automatic overwrite, New job opportunity
+
+**Application**:
+The User's record of applying to a specific Job Description using a selected baseline CV, tracking its recruitment lifecycle, tailored CV variant, cover letter, and comparative match scores.
+_Avoid_: Job submission, Opportunity tracker, Vacancy application
+
+**Tailored CV**:
+A specialized CV variant generated from a baseline CV and customized to emphasize qualifications and evidence matching a specific Job Description.
+_Avoid_: Optimized resume, Customized CV, Cloned CV
+
+**Application Status**:
+The external recruitment stage of an Application (`draft`, `applied`, `interviewing`, `offered`, `rejected`).
+_Avoid_: Job status, Pipeline state, Stage
+
+**Cover Letter**:
+A tailored narrative document written to introduce the User and articulate their qualifications for a specific Job Description based on verified CV evidence.
+_Avoid_: Motivation letter, Introduction note
+
+**Tailoring Status**:
+The operational lifecycle state of tailoring a CV within an Application (`idle`, `running`, `completed`, `failed`).
+_Avoid_: Generation state, Agent step
+
+**Requirement Delta**:
+The comparative shift in fulfillment status for each JD requirement between the baseline CV assessment and the tailored CV assessment.
+_Avoid_: Improvement log, Gap progress
+
+**Cover Letter Tone**:
+The stylistic register selected for generating a Cover Letter (`professional`, `conversational`, `executive`).
+_Avoid_: Voice, Writing style
+
+**Application Package**:
+The assembled submission bundle for an Application, comprising the tailored CV, cover letter, and direct link to the external job opportunity.
+_Avoid_: Export bundle, Submission kit, Application download
+

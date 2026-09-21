@@ -163,7 +163,7 @@ export default function Home() {
               Engineered for Modern Careers
             </h2>
             <p className="mt-4 text-base text-slate-600 dark:text-slate-300">
-              SanityCV pairs a battle-tested Next.js App Router architecture with
+              Verifit pairs a battle-tested Next.js App Router architecture with
               headless Sanity CMS and lightweight SQLite persistence.
             </p>
           </div>
@@ -247,7 +247,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-200/80 bg-white/40 py-8 dark:border-slate-800/80 dark:bg-slate-950/40">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
-          <p>© {new Date().getFullYear()} SanityCV. Intelligent CV tailoring powered by Sanity CMS.</p>
+          <p>© {new Date().getFullYear()} Verifit. Intelligent CV tailoring powered by Sanity CMS.</p>
           <div className="flex items-center gap-6">
             <Link href="/login" className="hover:text-indigo-600 dark:hover:text-indigo-400">Sign In</Link>
             <Link href="/register" className="hover:text-indigo-600 dark:hover:text-indigo-400">Register</Link>

@@ -3,8 +3,8 @@ import { AccountDashboard } from "@/modules/auth/components/account-dashboard";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Account Settings — SanityCV",
-  description: "Manage your profile, credentials, and active sessions on SanityCV.",
+  title: "Account Settings — Verifit",
+  description: "Manage your profile, credentials, and active sessions on Verifit.",
 };
 
 export default async function AccountPage() {

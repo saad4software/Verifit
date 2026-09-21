@@ -4,8 +4,8 @@ import { listUserCvs } from '@/modules/cvs/service'
 import { CvsDashboard } from '@/modules/cvs/components/cvs-dashboard'
 
 export const metadata: Metadata = {
-  title: 'My Resumes — SanityCV',
-  description: 'Manage and tailor your professional CVs and resumes on SanityCV.',
+  title: 'My Resumes — Verifit',
+  description: 'Manage and tailor your professional CVs and resumes on Verifit.',
 }
 
 export default async function CvsPage() {

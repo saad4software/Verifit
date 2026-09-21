@@ -1,4 +1,4 @@
-# SanityCV Product Shell and Landing Architecture
+# Verifit Product Shell and Landing Architecture
 
 ## Context
 The application needs a user-facing entry point explaining its core value proposition (an intelligent CV tailoring web application powered by Sanity CMS) and routing users into registration, login, and account management.

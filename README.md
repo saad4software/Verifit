@@ -1,6 +1,6 @@
-# SanityCV — Intelligent CV Tailoring & Requirement Matching
+# Verifit — Intelligent CV Tailoring & Requirement Matching
 
-SanityCV is an intelligent CV tailoring and requirement matching platform built with **Next.js 16 App Router**, **React 19**, **Sanity CMS**, and **Tailwind CSS v4**. It combines local relational persistence for authentication with a headless Sanity CMS content repository and **Sanity Agent Actions** for AI-driven CV extraction, Job Description (JD) structuring, and grounded, quote-validated candidate requirement matching.
+Verifit is an intelligent CV tailoring and requirement matching platform built with **Next.js 16 App Router**, **React 19**, **Sanity CMS**, and **Tailwind CSS v4**. It combines local relational persistence for authentication with a headless Sanity CMS content repository and **Sanity Agent Actions** for AI-driven CV extraction, Job Description (JD) structuring, and grounded, quote-validated candidate requirement matching.
 
 ---
 
@@ -28,7 +28,7 @@ SanityCV is an intelligent CV tailoring and requirement matching platform built 
 
 ## Overview
 
-SanityCV bridges candidate resumes and employer job descriptions with transparent, verifiable intelligence. Instead of treating resume matching as an opaque score, SanityCV decomposes job postings into granular, hierarchical requirements (skills, experience ranges, degrees, certifications, AND/OR alternative groupings), extracts candidate career histories into structured modular sections, and scores CVs using a deterministic, weighted rubric grounded in exact, verifiable quotes from the candidate's resume.
+Verifit bridges candidate resumes and employer job descriptions with transparent, verifiable intelligence. Instead of treating resume matching as an opaque score, Verifit decomposes job postings into granular, hierarchical requirements (skills, experience ranges, degrees, certifications, AND/OR alternative groupings), extracts candidate career histories into structured modular sections, and scores CVs using a deterministic, weighted rubric grounded in exact, verifiable quotes from the candidate's resume.
 
 ---
 
@@ -119,10 +119,10 @@ SanityCV bridges candidate resumes and employer job descriptions with transparen
 
 ## Project Architecture
 
-The application adopts a **root-level modular architecture** ([ADR 0002](file:///Users/saad/Projects/offereveryday/sanitycv/docs/adr/0002-root-modular-architecture.md)), encapsulating business domains into self-contained modules while Next.js routes handle presentation and HTTP endpoints:
+The application adopts a **root-level modular architecture** ([ADR 0002](file:///Users/saad/Projects/offereveryday/Verifit/docs/adr/0002-root-modular-architecture.md)), encapsulating business domains into self-contained modules while Next.js routes handle presentation and HTTP endpoints:
 
 ```
-sanitycv/
+verifit/
 ├── app/                           # Next.js 16 App Router routes
 │   ├── account/                   # Account management dashboard
 │   ├── api/                       # API Route Handlers
@@ -171,8 +171,8 @@ sanitycv/
 Clone the repository and install project dependencies:
 
 ```bash
-git clone https://github.com/your-org/sanitycv.git
-cd sanitycv
+git clone https://github.com/your-org/verifit.git
+cd verifit
 npm install --legacy-peer-deps
 ```
 
@@ -230,7 +230,7 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Database Setup & Migrations
 
-SanityCV uses **Drizzle ORM** configured over **LibSQL** (SQLite). The database stores user identities, authentication credentials, active device sessions, and account profiles.
+Verifit uses **Drizzle ORM** configured over **LibSQL** (SQLite). The database stores user identities, authentication credentials, active device sessions, and account profiles.
 
 ### Running Migrations
 To apply all pending migrations in `drizzle/` to your database (`file:local.db`):
@@ -239,7 +239,7 @@ npm run db:migrate
 ```
 
 ### Modifying the Database Schema
-1. Edit the schema definitions in [`db/schema/auth.ts`](file:///Users/saad/Projects/offereveryday/sanitycv/db/schema/auth.ts).
+1. Edit the schema definitions in [`db/schema/auth.ts`](file:///Users/saad/Projects/offereveryday/Verifit/db/schema/auth.ts).
 2. Generate the next migration SQL files:
    ```bash
    npm run db:generate
@@ -253,7 +253,7 @@ npm run db:migrate
 
 ## Sanity CMS & AI Agent Actions Setup
 
-SanityCV utilizes Sanity as both a headless CMS and an AI extraction engine via **Sanity Agent Actions**.
+Verifit utilizes Sanity as both a headless CMS and an AI extraction engine via **Sanity Agent Actions**.
 
 ### 1. Initialize Sanity Project & Token
 1. Create a project at [Sanity Manage](https://www.sanity.io/manage).
@@ -328,7 +328,7 @@ Navigate to [http://localhost:3000/studio](http://localhost:3000/studio) to insp
 
 ## Testing & Quality Assurance
 
-SanityCV is supported by a comprehensive automated test suite spanning unit, component, API, and end-to-end browser tests.
+Verifit is supported by a comprehensive automated test suite spanning unit, component, API, and end-to-end browser tests.
 
 ```bash
 # Run all unit and integration tests (Vitest)

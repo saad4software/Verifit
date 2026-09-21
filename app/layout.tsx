@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SanityCV — Intelligent CV Tailoring Powered by Sanity CMS",
+  title: "Verifit — Intelligent CV Tailoring Powered by Sanity CMS",
   description:
     "Tailor your curriculum vitae dynamically with intelligent role targeting and headless Sanity CMS content management.",
 };

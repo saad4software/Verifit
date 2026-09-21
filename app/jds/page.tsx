@@ -4,8 +4,8 @@ import { listJds } from '@/modules/jds/service'
 import { JdsDashboard } from '@/modules/jds/components/jds-dashboard'
 
 export const metadata: Metadata = {
-  title: 'Job Descriptions — SanityCV',
-  description: 'Manage and review your target job opportunities and requirements on SanityCV.',
+  title: 'Job Descriptions — Verifit',
+  description: 'Manage and review your target job opportunities and requirements on Verifit.',
 }
 
 export default async function JdsPage() {

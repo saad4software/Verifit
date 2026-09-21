@@ -3,8 +3,8 @@ import { LoginForm } from "@/modules/auth/components/login-form";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sign In — SanityCV",
-  description: "Sign in to your SanityCV account to manage tailored resumes.",
+  title: "Sign In — Verifit",
+  description: "Sign in to your Verifit account to manage tailored resumes.",
 };
 
 export default function LoginPage() {

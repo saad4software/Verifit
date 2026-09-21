@@ -5,7 +5,7 @@ import { requireUser } from '@/modules/auth/session'
 import { JdImport } from '@/modules/jds/components/jd-import'
 
 export const metadata: Metadata = {
-  title: 'Import Job Description — SanityCV',
+  title: 'Import Job Description — Verifit',
   description: 'Import and structure a job description using Sanity AI.',
 }
 

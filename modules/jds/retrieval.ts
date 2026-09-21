@@ -70,7 +70,7 @@ async function page(
         headers: {
           Accept: 'text/html, application/xhtml+xml',
           'Accept-Encoding': 'identity',
-          'User-Agent': 'SanityCV/1.0',
+          'User-Agent': 'Verifit/1.0',
         },
         lookup: (_hostname, options, callback) => {
           const cb = typeof options === 'function' ? options : callback

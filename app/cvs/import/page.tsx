@@ -5,7 +5,7 @@ import { requireUser } from '@/modules/auth/session'
 import { ImportForm } from '@/modules/cvs/components/import-form'
 
 export const metadata: Metadata = {
-  title: 'Import CV — SanityCV',
+  title: 'Import CV — Verifit',
   description: 'Import your existing resume or CV for automated structuring with Sanity AI.',
 }
 

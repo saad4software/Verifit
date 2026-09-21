@@ -3,8 +3,8 @@ import { RegisterForm } from "@/modules/auth/components/register-form";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Register — SanityCV",
-  description: "Create your SanityCV account to start crafting tailored resumes.",
+  title: "Register — Verifit",
+  description: "Create your Verifit account to start crafting tailored resumes.",
 };
 
 export default function RegisterPage() {

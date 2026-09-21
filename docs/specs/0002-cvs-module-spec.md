@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-Users of SanityCV need to store, inspect, and manage structured CVs to power personalized CV tailoring workflows. Currently, no mechanism exists for users to import career histories from existing documents (PDF, DOCX) or raw text, nor is there a structured data model in Sanity CMS to represent CVs with industry-standard, ATS-friendly sections. Without an automated ingestion pipeline and structured content schema, users would have to manually re-enter their entire career history.
+Users of Verifit need to store, inspect, and manage structured CVs to power personalized CV tailoring workflows. Currently, no mechanism exists for users to import career histories from existing documents (PDF, DOCX) or raw text, nor is there a structured data model in Sanity CMS to represent CVs with industry-standard, ATS-friendly sections. Without an automated ingestion pipeline and structured content schema, users would have to manually re-enter their entire career history.
 
 ## Solution
 

@@ -6,7 +6,7 @@ import { JdError, type Jd } from '@/modules/jds/schema'
 import { JdDetail } from '@/modules/jds/components/jd-detail'
 
 export const metadata: Metadata = {
-  title: 'Job Description Details — SanityCV',
+  title: 'Job Description Details — Verifit',
   description: 'Inspect, review, and edit your structured job description.',
 }
 
