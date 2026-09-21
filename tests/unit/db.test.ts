@@ -43,4 +43,15 @@ describe("Database & Migration Seam", () => {
     expect(authInstance).toBeDefined();
     expect(authInstance.api).toBeDefined();
   });
+
+  it("configures client correctly for remote Turso and local URLs", async () => {
+    const { createDb } = await import("@/db");
+    const local = createDb("file:test.db");
+    expect(local.db).toBeDefined();
+    expect(local.client).toBeDefined();
+
+    const remote = createDb("libsql://example-db.turso.io", "test-token");
+    expect(remote.db).toBeDefined();
+    expect(remote.client).toBeDefined();
+  });
 });

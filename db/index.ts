@@ -1,11 +1,33 @@
+import { loadEnvConfig } from "@next/env";
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 
-const defaultDatabaseUrl = process.env.DATABASE_URL || "file:local.db";
+loadEnvConfig(process.cwd());
 
-export function createDb(url: string = defaultDatabaseUrl) {
-  const client = createClient({ url });
+const defaultDatabaseUrl =
+  process.env.TURSO_DATABASE_URL ||
+  process.env.DATABASE_URL ||
+  "file:local.db";
+
+const defaultAuthToken =
+  process.env.TURSO_AUTH_TOKEN ||
+  process.env.DATABASE_AUTH_TOKEN;
+
+export function createDb(
+  url: string = defaultDatabaseUrl,
+  authToken: string | undefined = defaultAuthToken
+) {
+  const isRemote =
+    url.startsWith("libsql:") ||
+    url.startsWith("https:") ||
+    url.startsWith("http:") ||
+    url.startsWith("wss:");
+
+  const client = createClient({
+    url,
+    authToken: isRemote ? authToken : undefined,
+  });
   const db = drizzle(client, { schema });
   return { client, db };
 }

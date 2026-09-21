@@ -263,8 +263,9 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 | `NEXT_PUBLIC_APP_URL` | Public base URL of the web application | `http://localhost:3000` |
 | `BETTER_AUTH_URL` | Base URL used by Better Auth for callback resolution | `http://localhost:3000` |
 | `BETTER_AUTH_SECRET` | 32+ character random secret string for session signing | `openssl rand -hex 32` |
-| `DATABASE_URL` | LibSQL connection URI (local SQLite file or Turso URL) | `file:local.db` |
-| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Your Sanity Project ID | Obtained from [sanity.io/manage](https://www.sanity.io/manage) |
+| `DATABASE_URL` | LibSQL connection URI (local SQLite file fallback) | `file:local.db` |
+| `TURSO_DATABASE_URL` | Hosted Turso database connection URL (`libsql://...`) | `libsql://your-db.turso.io` |
+| `TURSO_AUTH_TOKEN` | Turso database authentication token | Secured database JWT token |
 | `NEXT_PUBLIC_SANITY_DATASET` | Target Sanity dataset | `production` |
 | `NEXT_PUBLIC_SANITY_API_VERSION`| Sanity API version date string | `2026-09-19` |
 | `SANITY_API_TOKEN` | Sanity Write Token (Editor/Write permission) | Server-only secret token |
@@ -284,9 +285,15 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 Verifit uses **Drizzle ORM** configured over **LibSQL** (SQLite). The database stores user identities, authentication credentials, active device sessions, and account profiles.
 
 ### Running Migrations
-To apply all pending migrations in `drizzle/` to your database (`file:local.db`):
+To apply all pending migrations in `drizzle/` to your database (Turso when `TURSO_DATABASE_URL` is set, or local fallback `file:local.db`):
 ```bash
 npm run db:migrate
+```
+
+### Migrating Data from Local SQLite to Turso
+To copy existing local data (`file:local.db`) into your hosted Turso database:
+```bash
+npx tsx scripts/migrate-data-to-turso.ts
 ```
 
 ### Modifying the Database Schema
