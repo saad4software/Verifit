@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Briefcase,
@@ -17,6 +17,7 @@ import { applicationStatuses } from '@/sanity/schemaTypes/application'
 
 interface KanbanBoardProps {
   initialApplications: PopulatedApplication[]
+  onApplicationsChange?: (applications: PopulatedApplication[]) => void
 }
 
 const statusColumns: { key: ApplicationStatus; label: string; badgeColor: string }[] = [
@@ -47,11 +48,18 @@ const statusColumns: { key: ApplicationStatus; label: string; badgeColor: string
   },
 ]
 
-export function KanbanBoard({ initialApplications }: KanbanBoardProps) {
+export function KanbanBoard({
+  initialApplications,
+  onApplicationsChange,
+}: KanbanBoardProps) {
   const [applications, setApplications] = useState<PopulatedApplication[]>(initialApplications)
   const [viewMode, setViewMode] = useState<'kanban' | 'table'>('kanban')
   const [search, setSearch] = useState('')
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null)
+
+  useEffect(() => {
+    setApplications(initialApplications)
+  }, [initialApplications])
 
   const filtered = applications.filter((app) => {
     const term = search.toLowerCase()
@@ -67,11 +75,11 @@ export function KanbanBoard({ initialApplications }: KanbanBoardProps) {
     newStatus: ApplicationStatus
   ) => {
     setActiveMenuId(null)
-    setApplications((prev) =>
-      prev.map((app) =>
-        app._id === applicationId ? { ...app, status: newStatus } : app
-      )
+    const updated = applications.map((app) =>
+      app._id === applicationId ? { ...app, status: newStatus } : app
     )
+    setApplications(updated)
+    onApplicationsChange?.(updated)
 
     try {
       await fetch(`/api/applications/${applicationId}`, {
@@ -87,7 +95,9 @@ export function KanbanBoard({ initialApplications }: KanbanBoardProps) {
   const handleDelete = async (applicationId: string) => {
     if (!confirm('Are you sure you want to delete this application?')) return
     setActiveMenuId(null)
-    setApplications((prev) => prev.filter((a) => a._id !== applicationId))
+    const updated = applications.filter((a) => a._id !== applicationId)
+    setApplications(updated)
+    onApplicationsChange?.(updated)
 
     try {
       await fetch(`/api/applications/${applicationId}`, {

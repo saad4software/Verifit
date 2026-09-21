@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Plus, Briefcase, Award, CheckCircle2 } from 'lucide-react'
+import { Plus, Briefcase, Award, CheckCircle2, RefreshCw } from 'lucide-react'
 import type { PopulatedApplication } from '../types'
 import { KanbanBoard } from './kanban-board'
 import { NewApplicationModal } from './new-application-modal'
@@ -15,6 +15,22 @@ export function ApplicationsDashboard({
 }: ApplicationsDashboardProps) {
   const [applications, setApplications] = useState<PopulatedApplication[]>(initialApplications)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    try {
+      const res = await fetch('/api/applications')
+      if (res.ok) {
+        const data = await res.json()
+        setApplications(data.applications || [])
+      }
+    } catch (err) {
+      console.error('Failed to refresh applications:', err)
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
 
   const handleApplicationCreated = (newApp: PopulatedApplication) => {
     setApplications((prev) => [newApp, ...prev])
@@ -48,13 +64,31 @@ export function ApplicationsDashboard({
           </p>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
-        >
-          <Plus className="h-4 w-4" />
-          New Application
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            data-testid="refresh-applications-button"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            title="Refresh Applications"
+          >
+            <RefreshCw
+              className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin' : ''}`}
+            />
+            <span className="hidden sm:inline">Refresh</span>
+          </button>
+
+          <button
+            type="button"
+            data-testid="new-application-button"
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
+          >
+            <Plus className="h-4 w-4" />
+            <span>New Application</span>
+          </button>
+        </div>
       </div>
 
       {/* Metrics Row */}
@@ -99,7 +133,10 @@ export function ApplicationsDashboard({
       </div>
 
       {/* Main Kanban Board */}
-      <KanbanBoard initialApplications={applications} />
+      <KanbanBoard
+        initialApplications={applications}
+        onApplicationsChange={setApplications}
+      />
 
       {/* New Application Modal */}
       <NewApplicationModal

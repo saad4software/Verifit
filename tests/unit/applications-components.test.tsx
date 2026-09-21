@@ -1,10 +1,11 @@
 import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { ScoreDeltaCard } from '@/modules/applications/components/score-delta-card'
 import { RequirementDeltaTable } from '@/modules/applications/components/requirement-delta-table'
 import { KanbanBoard } from '@/modules/applications/components/kanban-board'
 import { ApplicationPackageDrawer } from '@/modules/applications/components/application-package-drawer'
+import { ApplicationsDashboard } from '@/modules/applications/components/applications-dashboard'
 import type { PopulatedApplication, RequirementDelta, ScoreDelta } from '@/modules/applications/types'
 
 vi.mock('next/navigation', () => ({
@@ -125,6 +126,99 @@ describe('Applications Components', () => {
       expect(screen.getByText('Application Package')).toBeInTheDocument()
       expect(screen.getByText('View & Print PDF')).toBeInTheDocument()
       expect(screen.getByText('Copy to Clipboard')).toBeInTheDocument()
+    })
+  })
+
+  describe('ApplicationsDashboard', () => {
+    const initialApp: PopulatedApplication = {
+      _id: 'app_1',
+      _type: 'application',
+      userId: 'u1',
+      title: 'Fullstack Engineer at Vercel',
+      status: 'draft',
+      tailoringStatus: 'completed',
+      jd: { _type: 'reference', _ref: 'jd_1' },
+      baseCv: { _type: 'reference', _ref: 'cv_1' },
+      scoreDelta: {
+        oldScore: 50,
+        newScore: 85,
+        scoreDiff: 35,
+        gapsClosed: 2,
+        totalRequirements: 5,
+      },
+    }
+
+    it('renders header, initial counts, and refresh button', () => {
+      render(<ApplicationsDashboard initialApplications={[initialApp]} />)
+
+      expect(screen.getByText('Job Applications')).toBeInTheDocument()
+      const refreshBtn = screen.getByTestId('refresh-applications-button')
+      expect(refreshBtn).toBeInTheDocument()
+      expect(refreshBtn).toHaveTextContent('Refresh')
+      expect(screen.getByText('1 Total')).toBeInTheDocument()
+    })
+
+    it('refreshes applications on refresh button click and updates metrics', async () => {
+      const refreshedApp: PopulatedApplication = {
+        _id: 'app_2',
+        _type: 'application',
+        userId: 'u1',
+        title: 'Backend Engineer at Stripe',
+        status: 'interviewing',
+        tailoringStatus: 'completed',
+        jd: { _type: 'reference', _ref: 'jd_2' },
+        baseCv: { _type: 'reference', _ref: 'cv_2' },
+        scoreDelta: {
+          oldScore: 70,
+          newScore: 92,
+          scoreDiff: 22,
+          gapsClosed: 1,
+          totalRequirements: 4,
+        },
+      }
+
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ applications: [initialApp, refreshedApp] }),
+      })
+      global.fetch = fetchMock
+
+      render(<ApplicationsDashboard initialApplications={[initialApp]} />)
+
+      const refreshBtn = screen.getByTestId('refresh-applications-button')
+      fireEvent.click(refreshBtn)
+
+      await waitFor(() => {
+        expect(fetchMock).toHaveBeenCalledWith('/api/applications')
+      })
+
+      await waitFor(() => {
+        expect(screen.getByText('2 Total')).toBeInTheDocument()
+        expect(screen.getByText('Backend Engineer at Stripe')).toBeInTheDocument()
+      })
+    })
+
+    it('handles refresh errors gracefully', async () => {
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const fetchMock = vi.fn().mockRejectedValue(new Error('Network error'))
+      global.fetch = fetchMock
+
+      render(<ApplicationsDashboard initialApplications={[initialApp]} />)
+
+      const refreshBtn = screen.getByTestId('refresh-applications-button')
+      fireEvent.click(refreshBtn)
+
+      await waitFor(() => {
+        expect(fetchMock).toHaveBeenCalledWith('/api/applications')
+      })
+
+      // Remains mounted with original application
+      expect(screen.getByText('Fullstack Engineer at Vercel')).toBeInTheDocument()
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to refresh applications:',
+        expect.any(Error)
+      )
+      consoleSpy.mockRestore()
     })
   })
 })
