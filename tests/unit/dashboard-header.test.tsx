@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { DashboardHeader } from '@/modules/dashboard/components/dashboard-header'
-import * as authClient from '@/modules/auth/client'
-
 const mockPush = vi.fn()
 const mockRefresh = vi.fn()
 let mockCurrentPathname = '/dashboard/cvs'
@@ -10,7 +8,7 @@ let mockCurrentPathname = '/dashboard/cvs'
 const mockSignOut = vi.fn().mockResolvedValue({})
 
 vi.mock('@/modules/auth/client', () => ({
-  signOut: (...args: any[]) => mockSignOut(...args),
+  signOut: (...args: unknown[]) => mockSignOut(...args),
 }))
 
 vi.mock('next/navigation', () => ({
@@ -38,7 +36,9 @@ describe('DashboardHeader Component', () => {
   it('renders dashboard brand and the three navigation tabs', () => {
     render(<DashboardHeader user={mockUser} />)
 
-    expect(screen.getByTestId('dashboard-header')).toBeInTheDocument()
+    const header = screen.getByTestId('dashboard-header')
+    expect(header).toBeInTheDocument()
+    expect(header).toHaveClass('print:hidden')
     expect(screen.getByTestId('dashboard-brand')).toHaveAttribute('href', '/dashboard/cvs')
 
     const cvsLink = screen.getByTestId('dashboard-nav-cvs')

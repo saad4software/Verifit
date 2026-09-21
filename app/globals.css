@@ -26,6 +26,13 @@ body {
 }
 
 @media print {
+  /* Hide application headers and navigation */
+  header,
+  [data-testid="header"],
+  [data-testid="dashboard-header"] {
+    display: none !important;
+  }
+
   .jd-detail > :not(.jd-print-preview) {
     display: none;
   }
@@ -46,12 +53,24 @@ body {
     display: block;
   }
 
-  body:has(:is(.cv-detail, .jd-detail)) > header {
-    display: none;
+  body:has(:is(.cv-detail, .jd-detail)) header,
+  body:has(:is(.cv-detail, .jd-detail)) [data-testid="header"],
+  body:has(:is(.cv-detail, .jd-detail)) [data-testid="dashboard-header"] {
+    display: none !important;
   }
 
   body:has(:is(.cv-detail, .jd-detail)) > main {
     display: block;
+  }
+
+  body:has(:is(.cv-detail, .jd-detail)) [data-testid="dashboard-layout"] {
+    min-height: 0;
+    background: white;
+  }
+
+  body:has(:is(.cv-detail, .jd-detail)) [data-testid="dashboard-layout"] > div {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   :is(.cv-detail, .jd-detail) {
