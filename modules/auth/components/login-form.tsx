@@ -67,7 +67,7 @@ export function LoginForm() {
             Welcome back
           </h1>
           <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
-            Sign in to access your tailored CVs and Sanity Studio
+            Sign in to access your tailored CVs and job applications
           </p>
         </div>
 

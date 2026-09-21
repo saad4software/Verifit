@@ -9,7 +9,6 @@ import {
   Eye,
   Printer,
   Star,
-  ExternalLink,
 } from 'lucide-react'
 import { CVDocument, IngestionStatus } from '../types'
 import { ProgressStepper } from './progress-stepper'
@@ -124,7 +123,7 @@ export function CvDetailView({ initialCv }: CvDetailViewProps) {
           )}
         </div>
 
-        {/* Action buttons (Preview / Edit / Print / Studio) */}
+        {/* Action buttons (Preview / Edit / Print) */}
         {status === 'ready' && (
           <div className="flex items-center gap-2">
             <div className="flex rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
@@ -167,16 +166,6 @@ export function CvDetailView({ initialCv }: CvDetailViewProps) {
               <span className="hidden sm:inline">Print / PDF</span>
             </button>
 
-            <Link
-              href={`/studio/structure/cv;${cv._id}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
-              title="Inspect in Sanity Studio"
-            >
-              <span className="hidden sm:inline">Sanity Studio</span>
-              <ExternalLink className="h-3.5 w-3.5" />
-            </Link>
           </div>
         )}
       </div>

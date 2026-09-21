@@ -37,14 +37,14 @@ export function ProgressStepper({
     },
     {
       id: 'structuring',
-      name: 'Sanity Agent Structuring',
+      name: 'AI Agent Structuring',
       description: 'Extracting sections into schema fields',
       icon: Sparkles,
     },
     {
       id: 'ready',
       name: 'Structured CV Ready',
-      description: 'Validated & stored in Sanity dataset',
+      description: 'Validated & stored in dataset',
       icon: CheckCircle2,
     },
   ]
@@ -106,7 +106,7 @@ export function ProgressStepper({
               ? 'Your CV is fully structured and ready for tailoring'
               : status === 'failed'
               ? 'Structuring stopped with an error'
-              : 'Processing your document with Sanity AI Agent'}
+              : 'Processing your document with AI Agent'}
           </p>
         </div>
 
@@ -197,7 +197,7 @@ export function ProgressStepper({
               </h4>
               <p className="mt-1 text-xs text-rose-700 dark:text-rose-300">
                 {errorMessage ||
-                  'The Sanity Agent could not complete structuring this document. Your extracted text has been preserved.'}
+                  'The AI Agent could not complete structuring this document. Your extracted text has been preserved.'}
               </p>
               {retryError && (
                 <p className="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">

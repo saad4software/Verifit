@@ -8,7 +8,6 @@ import {
   Lock,
   Cpu,
   CheckCircle2,
-  ExternalLink,
 } from "lucide-react";
 
 export default function Home() {
@@ -59,13 +58,6 @@ export default function Home() {
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-6 py-3.5 text-base font-semibold text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white"
               >
                 Sign In
-              </Link>
-              <Link
-                href="/studio"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-medium text-slate-500 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
-              >
-                <span>Sanity Studio</span>
-                <ExternalLink className="h-3.5 w-3.5" />
               </Link>
             </div>
 
@@ -251,7 +243,6 @@ export default function Home() {
           <div className="flex items-center gap-6">
             <Link href="/login" className="hover:text-indigo-600 dark:hover:text-indigo-400">Sign In</Link>
             <Link href="/register" className="hover:text-indigo-600 dark:hover:text-indigo-400">Register</Link>
-            <Link href="/studio" className="hover:text-indigo-600 dark:hover:text-indigo-400">Sanity Studio</Link>
           </div>
         </div>
       </footer>
