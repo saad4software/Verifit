@@ -105,8 +105,8 @@ export function ImportForm() {
         throw new Error(data.error || 'Failed to import CV')
       }
 
-      // Immediately navigate to /cvs/[id] with live stepper
-      router.push(`/cvs/${data.cvId}`)
+      // Immediately navigate to /dashboard/cvs/[id] with live stepper
+      router.push(`/dashboard/cvs/${data.cvId}`)
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : 'Something went wrong during import.'

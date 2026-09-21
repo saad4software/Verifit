@@ -33,7 +33,7 @@ it("shows the empty library and import action", async () => {
   expect(await screen.findByText(/No CVs yet/)).toBeVisible();
   expect(screen.getByRole("link", { name: "Import a CV" })).toHaveAttribute(
     "href",
-    "/cvs/import",
+    "/dashboard/cvs/import",
   );
 });
 it("starts pending work automatically and does not hide CVs awaiting structuring", async () => {
@@ -138,7 +138,7 @@ it("renders the exact evidence, arithmetic, gap and CV source link", async () =>
   expect(screen.getByText("Five years React required")).toBeVisible();
   expect(
     screen.getByRole("link", { name: "View Summary in CV" }),
-  ).toHaveAttribute("href", "/cvs/a#cv-summary");
+  ).toHaveAttribute("href", "/dashboard/cvs/a#cv-summary");
 });
 it("provides an explicit retry for failed assessments", async () => {
   fetcher.mockResolvedValue(

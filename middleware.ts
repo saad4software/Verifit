@@ -3,7 +3,8 @@ import { NextResponse, type NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isProtectedRoute = pathname.startsWith("/account");
+  const isProtectedRoute =
+    pathname.startsWith("/account") || pathname.startsWith("/dashboard");
 
   if (isProtectedRoute) {
     const sessionCookie =
@@ -21,5 +22,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account/:path*"],
+  matcher: ["/account/:path*", "/dashboard/:path*"],
 };

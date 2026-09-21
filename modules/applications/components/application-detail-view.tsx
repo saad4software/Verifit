@@ -92,7 +92,7 @@ export function ApplicationDetailView({
       {/* Top Navigation & Breadcrumbs */}
       <div className="flex items-center justify-between">
         <Link
-          href="/applications"
+          href="/dashboard/applications"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -135,7 +135,7 @@ export function ApplicationDetailView({
               </span>
               {app.jdData && (
                 <Link
-                  href={`/jds/${app.jdData._id}`}
+                  href={`/dashboard/jds/${app.jdData._id}`}
                   className="inline-flex items-center gap-1 text-indigo-600 hover:underline dark:text-indigo-400"
                 >
                   View JD Specs <ExternalLink className="h-3 w-3" />
@@ -273,7 +273,7 @@ export function ApplicationDetailView({
                   </button>
 
                   <a
-                    href={`/cvs/${tailoredCvId}`}
+                    href={`/dashboard/cvs/${tailoredCvId}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
@@ -402,7 +402,7 @@ export function ApplicationDetailView({
             </div>
             {app.jdData && (
               <Link
-                href={`/jds/${app.jdData._id}`}
+                href={`/dashboard/jds/${app.jdData._id}`}
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
               >
                 Open Full JD <ExternalLink className="h-3.5 w-3.5" />

@@ -11,6 +11,7 @@ vi.mock("next/navigation", () => ({
     push: vi.fn(),
     refresh: vi.fn(),
   }),
+  usePathname: () => "/",
 }));
 
 describe("Landing Page & Global Shell (Ticket 02)", () => {

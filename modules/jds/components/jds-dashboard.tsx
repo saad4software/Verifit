@@ -79,7 +79,7 @@ export function JdsDashboard({ initialJds }: JdsDashboardProps) {
           </button>
 
           <Link
-            href="/jds/import"
+            href="/dashboard/jds/import"
             data-testid="import-new-jd-button"
             className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:shadow-indigo-500/40 hover:brightness-110"
           >
@@ -121,7 +121,7 @@ export function JdsDashboard({ initialJds }: JdsDashboardProps) {
           </p>
 
           <Link
-            href="/jds/import"
+            href="/dashboard/jds/import"
             data-testid="empty-state-import-button"
             className="mt-6 flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-500"
           >

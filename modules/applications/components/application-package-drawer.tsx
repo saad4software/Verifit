@@ -109,7 +109,7 @@ export function ApplicationPackageDrawer({
             {tailoredCvId ? (
               <div className="mt-4 flex gap-2">
                 <a
-                  href={`/cvs/${tailoredCvId}`}
+                  href={`/dashboard/cvs/${tailoredCvId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 transition"

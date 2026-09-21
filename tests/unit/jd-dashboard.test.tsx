@@ -96,7 +96,7 @@ describe('JDs Dashboard and Card Components', () => {
     expect(screen.getByText(/No job descriptions imported yet/i)).toBeInTheDocument()
     expect(screen.getByTestId('empty-state-import-button')).toHaveAttribute(
       'href',
-      '/jds/import',
+      '/dashboard/jds/import',
     )
   })
 
@@ -134,7 +134,7 @@ describe('JDs Dashboard and Card Components', () => {
     // Open button
     expect(screen.getByTestId('open-jd-button')).toHaveAttribute(
       'href',
-      `/jds/${mockJd._id}`,
+      `/dashboard/jds/${mockJd._id}`,
     )
 
     // Delete toggle

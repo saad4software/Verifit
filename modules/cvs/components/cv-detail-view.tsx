@@ -92,12 +92,12 @@ export function CvDetailView({ initialCv }: CvDetailViewProps) {
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <div className="flex items-center gap-3">
           <Link
-            href="/cvs"
+            href="/dashboard/cvs"
             data-testid="back-to-cvs-link"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 transition dark:text-slate-400 dark:hover:text-indigo-400"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            <span>My CVs</span>
+            <span>My Resumes</span>
           </Link>
 
           <span className="text-slate-300 dark:text-slate-700">•</span>

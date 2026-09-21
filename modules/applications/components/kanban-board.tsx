@@ -179,7 +179,7 @@ export function KanbanBoard({ initialApplications }: KanbanBoardProps) {
                       >
                         <div className="flex items-start justify-between gap-2">
                           <Link
-                            href={`/applications/${app._id}`}
+                            href={`/dashboard/applications/${app._id}`}
                             className="text-sm font-bold text-slate-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400 line-clamp-2"
                           >
                             {app.title || 'Job Application'}
@@ -312,7 +312,7 @@ export function KanbanBoard({ initialApplications }: KanbanBoardProps) {
                   >
                     <td className="px-6 py-4">
                       <Link
-                        href={`/applications/${app._id}`}
+                        href={`/dashboard/applications/${app._id}`}
                         className="font-semibold text-slate-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400"
                       >
                         {app.title || 'Job Application'}
@@ -352,7 +352,7 @@ export function KanbanBoard({ initialApplications }: KanbanBoardProps) {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Link
-                        href={`/applications/${app._id}`}
+                        href={`/dashboard/applications/${app._id}`}
                         className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                       >
                         Open <ExternalLink className="h-3 w-3" />

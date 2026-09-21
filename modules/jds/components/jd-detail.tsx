@@ -134,7 +134,7 @@ export function JdDetail({ initialJd }: { initialJd: Jd }) {
     try {
       const response = await fetch(`/api/jds/${jd._id}`, { method: 'DELETE' })
       if (!response.ok) throw new Error((await response.json()).error)
-      router.push('/jds')
+      router.push('/dashboard/jds')
       router.refresh()
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Deletion failed.')
@@ -151,7 +151,7 @@ export function JdDetail({ initialJd }: { initialJd: Jd }) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <div className="flex items-center gap-3">
           <Link
-            href="/jds"
+            href="/dashboard/jds"
             data-testid="back-to-jds-link"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 transition dark:text-slate-400 dark:hover:text-indigo-400"
           >

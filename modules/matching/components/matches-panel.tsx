@@ -143,7 +143,7 @@ export function MatchesPanel({
       {data && data.rows.length === 0 && (
         <p>
           No CVs yet.{" "}
-          <Link className="text-indigo-600 underline" href="/cvs/import">
+          <Link className="text-indigo-600 underline" href="/dashboard/cvs/import">
             Import a CV
           </Link>{" "}
           to see how it matches.
@@ -185,7 +185,7 @@ export function MatchesPanel({
               >
                 <div className="flex items-start justify-between gap-4">
                   <Link
-                    href={"/cvs/" + encodeURIComponent(row.cvId)}
+                    href={"/dashboard/cvs/" + encodeURIComponent(row.cvId)}
                     className="font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                   >
                     {row.title}
@@ -305,7 +305,7 @@ function MatchDetails({ result, cvId }: { result: MatchResult; cvId: string }) {
                   <p>{e.quote}</p>
                   <Link
                     className="mt-1 inline-block text-xs text-indigo-600 underline"
-                    href={"/cvs/" + encodeURIComponent(cvId) + "#" + e.anchor}
+                    href={"/dashboard/cvs/" + encodeURIComponent(cvId) + "#" + e.anchor}
                   >
                     View {e.label} in CV
                   </Link>

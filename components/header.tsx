@@ -1,15 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "@/modules/auth/client";
-import { Sparkles, User as UserIcon, LogOut, Shield, FileText, Briefcase, Layers } from "lucide-react";
+import { Sparkles, User as UserIcon, LogOut, Shield, LayoutDashboard } from "lucide-react";
 import { useState } from "react";
 
 export function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const { data: session, isPending } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // The dashboard screen has its own layout and header
+  if (pathname?.startsWith("/dashboard")) {
+    return null;
+  }
 
   const handleSignOut = async () => {
     await signOut();
@@ -58,34 +64,15 @@ export function Header() {
             How it Works
           </Link>
           {session?.user && (
-            <>
-              <Link
-                href="/cvs"
-                data-testid="nav-cvs"
-                className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1.5"
-              >
-                <FileText className="h-4 w-4" />
-                My Resumes
-              </Link>
-              <Link
-                href="/jds"
-                data-testid="nav-jds"
-                className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1.5"
-              >
-                <Briefcase className="h-4 w-4" />
-                Job Descriptions
-              </Link>
-              <Link
-                href="/applications"
-                data-testid="nav-applications"
-                className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1.5"
-              >
-                <Layers className="h-4 w-4" />
-                Applications
-              </Link>
-            </>
+            <Link
+              href="/dashboard/cvs"
+              data-testid="nav-dashboard"
+              className="text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 flex items-center gap-1.5"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Link>
           )}
-
         </nav>
 
         {/* Right side auth buttons or user menu */}
@@ -136,31 +123,13 @@ export function Header() {
                     </p>
                   </div>
                   <Link
-                    href="/cvs"
-                    data-testid="dropdown-cvs"
+                    href="/dashboard/cvs"
+                    data-testid="dropdown-dashboard"
                     onClick={() => setIsMenuOpen(false)}
                     className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
                   >
-                    <FileText className="h-4 w-4 text-indigo-500" />
-                    My Resumes
-                  </Link>
-                  <Link
-                    href="/jds"
-                    data-testid="dropdown-jds"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-                  >
-                    <Briefcase className="h-4 w-4 text-indigo-500" />
-                    Job Descriptions
-                  </Link>
-                  <Link
-                    href="/applications"
-                    data-testid="dropdown-applications"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-                  >
-                    <Layers className="h-4 w-4 text-indigo-500" />
-                    Applications
+                    <LayoutDashboard className="h-4 w-4 text-indigo-500" />
+                    Dashboard
                   </Link>
                   <Link
                     href="/account"

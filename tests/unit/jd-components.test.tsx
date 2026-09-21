@@ -38,9 +38,9 @@ it('lets the user open a duplicate or deliberately create an independent copy', 
   )
   expect(
     await screen.findByRole('link', { name: 'Open existing JD' }),
-  ).toHaveAttribute('href', '/jds/existing')
+  ).toHaveAttribute('href', '/dashboard/jds/existing')
   fireEvent.click(screen.getByRole('button', { name: 'Create separate copy' }))
-  await waitFor(() => expect(push).toHaveBeenCalledWith('/jds/copy'))
+  await waitFor(() => expect(push).toHaveBeenCalledWith('/dashboard/jds/copy'))
 })
 
 const jd: Jd = {

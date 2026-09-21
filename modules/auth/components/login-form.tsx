@@ -11,7 +11,7 @@ import { loginSchema } from "@/modules/auth/schemas";
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/account";
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard/cvs";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -148,7 +148,7 @@ export function LoginForm() {
         <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
           Don&apos;t have an account yet?{" "}
           <Link
-            href={`/register${callbackUrl !== "/account" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`}
+            href={`/register${callbackUrl !== "/dashboard/cvs" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`}
             className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
           >
             Create an account

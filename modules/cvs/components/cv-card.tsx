@@ -123,7 +123,7 @@ export function CvCard({ cv, onRefresh }: CvCardProps) {
         </div>
 
         {/* Title and subtitle */}
-        <Link href={`/cvs/${cv._id}`} className="block group-hover:text-indigo-600">
+        <Link href={`/dashboard/cvs/${cv._id}`} className="block group-hover:text-indigo-600">
           <h3 className="text-base font-bold text-slate-900 transition dark:text-white dark:group-hover:text-indigo-400">
             {cv.title || 'Untitled CV'}
           </h3>
@@ -200,7 +200,7 @@ export function CvCard({ cv, onRefresh }: CvCardProps) {
           )}
 
           <Link
-            href={`/cvs/${cv._id}`}
+            href={`/dashboard/cvs/${cv._id}`}
             data-testid="open-cv-button"
             className="flex items-center gap-1 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 transition hover:bg-indigo-50 hover:text-indigo-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-400"
           >

@@ -37,7 +37,7 @@ export function JdImport() {
         return
       }
       if (!response.ok) throw new Error(data.error)
-      router.push(`/jds/${data.jd._id}`)
+      router.push(`/dashboard/jds/${data.jd._id}`)
     } catch (error) {
       setError(
         error instanceof Error ? error.message : 'Import failed. Please retry.',
@@ -204,7 +204,7 @@ export function JdImport() {
           <div className="flex flex-wrap gap-4 pt-1">
             <Link
               className="inline-flex items-center gap-1 font-semibold text-indigo-600 hover:text-indigo-500 underline dark:text-indigo-400"
-              href={`/jds/${existing}`}
+              href={`/dashboard/jds/${existing}`}
             >
               <span>Open existing JD</span>
               <ExternalLink className="h-3 w-3" />

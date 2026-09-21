@@ -7,13 +7,15 @@ const mockPush = vi.fn();
 const mockRefresh = vi.fn();
 const mockSignInEmail = vi.fn();
 
+let mockCallbackUrl: string | null = "/account/profile";
+
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
     refresh: mockRefresh,
   }),
   useSearchParams: () => ({
-    get: (key: string) => (key === "callbackUrl" ? "/account/profile" : null),
+    get: (key: string) => (key === "callbackUrl" ? mockCallbackUrl : null),
   }),
 }));
 
@@ -87,6 +89,38 @@ describe("LoginForm (Ticket 04)", () => {
       expect(mockPush).toHaveBeenCalledWith("/account/profile");
       expect(mockRefresh).toHaveBeenCalled();
     });
+  });
+
+  it("redirects to /dashboard/cvs by default when no callbackUrl is provided", async () => {
+    mockCallbackUrl = null;
+    mockSignInEmail.mockResolvedValueOnce({
+      data: {
+        user: { id: "u1", email: "alex@example.com" },
+      },
+      error: null,
+    });
+
+    render(<LoginForm />);
+
+    fireEvent.change(screen.getByLabelText(/Email Address/i), {
+      target: { value: "alex@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/Password/i), {
+      target: { value: "secret123" },
+    });
+
+    fireEvent.click(screen.getByTestId("login-submit-btn"));
+
+    await waitFor(() => {
+      expect(mockSignInEmail).toHaveBeenCalledWith({
+        email: "alex@example.com",
+        password: "secret123",
+        callbackURL: "/dashboard/cvs",
+      });
+      expect(mockPush).toHaveBeenCalledWith("/dashboard/cvs");
+      expect(mockRefresh).toHaveBeenCalled();
+    });
+    mockCallbackUrl = "/account/profile";
   });
 
   it("displays error alert when invalid credentials are provided", async () => {
