@@ -263,7 +263,6 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 | `NEXT_PUBLIC_APP_URL` | Public base URL of the web application | `http://localhost:3000` |
 | `BETTER_AUTH_URL` | Base URL used by Better Auth for callback resolution | `http://localhost:3000` |
 | `BETTER_AUTH_SECRET` | 32+ character random secret string for session signing | `openssl rand -hex 32` |
-| `DATABASE_URL` | LibSQL connection URI (local SQLite file fallback) | `file:local.db` |
 | `TURSO_DATABASE_URL` | Hosted Turso database connection URL (`libsql://...`) | `libsql://your-db.turso.io` |
 | `TURSO_AUTH_TOKEN` | Turso database authentication token | Secured database JWT token |
 | `NEXT_PUBLIC_SANITY_DATASET` | Target Sanity dataset | `production` |
@@ -284,14 +283,21 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 Verifit uses **Drizzle ORM** configured over **LibSQL** (SQLite). The database stores user identities, authentication credentials, active device sessions, and account profiles.
 
+Set `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` in `.env.local`. The application and migration tools require hosted Turso; `DATABASE_URL` and `DATABASE_AUTH_TOKEN` are no longer used. Existing SQLite schemas remain compatible.
+
+Unit tests use explicit in-memory databases. Browser tests require `TEST_TURSO_DATABASE_URL` and `TEST_TURSO_AUTH_TOKEN` for a separate disposable Turso database; they apply migrations and leave test records there. CI build credentials are placeholders only and do not verify remote connectivity.
+
+### Verifying the Connection
+Run `npm run db:check` to verify the current application client uses a remote connection and that the four authentication tables exist. This check is read-only and does not print credentials. Restart `npm run dev` after changing database configuration; when using `npm run start`, rebuild first with `npm run build`.
+
 ### Running Migrations
-To apply all pending migrations in `drizzle/` to your database (Turso when `TURSO_DATABASE_URL` is set, or local fallback `file:local.db`):
+To apply all pending migrations in `drizzle/` to your database in hosted Turso:
 ```bash
 npm run db:migrate
 ```
 
 ### Migrating Data from Local SQLite to Turso
-To copy existing local data (`file:local.db`) into your hosted Turso database:
+After applying schema migrations, optionally copy existing local data (`file:local.db`) into your hosted Turso database:
 ```bash
 npx tsx scripts/migrate-data-to-turso.ts
 ```
@@ -469,7 +475,7 @@ To configure your GitHub repository for CI runs:
 | `BETTER_AUTH_SECRET` | **Recommended** | 32+ character key for authentication | Generates 32-character test dummy secret |
 | `SANITY_API_TOKEN` | Optional | Sanity API write token for runtime testing | Omitted during standard CI |
 
-> **Note**: Standard build-time defaults (`DATABASE_URL=file:local.db`, `NEXT_PUBLIC_APP_URL=http://localhost:3000`, and `BETTER_AUTH_URL=http://localhost:3000`) are automatically configured within the CI runner, so builds and tests succeed out-of-the-box even before repository secrets are set.
+> **Note**: Standard build-time defaults (non-connectable Turso placeholder credentials, `NEXT_PUBLIC_APP_URL=http://localhost:3000`, and `BETTER_AUTH_URL=http://localhost:3000`) are automatically configured within the CI runner, so builds and tests succeed out-of-the-box even before repository secrets are set.
 
 ---
 
@@ -482,7 +488,7 @@ npm run start
 ```
 
 ### 2. Production Checklist
-- **Database**: When deploying to serverless environments (e.g. Vercel), switch `DATABASE_URL` to a hosted [Turso](https://turso.tech) LibSQL database (`libsql://your-db.turso.io`) and set `DATABASE_AUTH_TOKEN`.
+- **Database**: Set `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` to your hosted [Turso](https://turso.tech) database in every development and deployment environment. Missing credentials or local file URLs cause an explicit configuration error.
 - **Function Timeout**: Ensure your hosting platform allows at least **300 seconds** for background route execution (`after()`) during AI Agent Actions generation.
 - **Sanity Security**: Ensure your Sanity dataset is private and never expose `SANITY_API_TOKEN` to the browser.
 - **Edge Proxy**: Ensure `proxy.ts` is deployed as part of your Next.js build to protect `/account` and `/dashboard` paths.

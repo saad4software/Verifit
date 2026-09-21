@@ -1,4 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
+import { loadEnvConfig } from "@next/env";
+import { getTursoConfig } from "./db/config";
+
+loadEnvConfig(process.cwd());
+const testDatabase = getTursoConfig({
+  TURSO_DATABASE_URL: process.env.TEST_TURSO_DATABASE_URL,
+  TURSO_AUTH_TOKEN: process.env.TEST_TURSO_AUTH_TOKEN,
+});
+if (testDatabase.url === process.env.TURSO_DATABASE_URL) {
+  throw new Error("Browser tests require a separate Turso database.");
+}
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -22,9 +33,10 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      "PORT=3001 DATABASE_URL=file:test.db BETTER_AUTH_URL=http://localhost:3001 npm run start",
+      "PORT=3001 BETTER_AUTH_URL=http://localhost:3001 npm run start",
     url: "http://localhost:3001",
-    reuseExistingServer: !process.env.CI,
+    env: { TURSO_DATABASE_URL: testDatabase.url, TURSO_AUTH_TOKEN: testDatabase.authToken },
+    reuseExistingServer: false,
     timeout: 120 * 1000,
   },
 });

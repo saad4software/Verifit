@@ -35,7 +35,7 @@ Implement an encapsulated, modular authentication and account management system 
 ## Implementation Decisions
 
 - **Modular Architecture**: Application concerns are isolated into independent modules. Identity and authentication live in an autonomous auth module, separated from database connection infrastructure and presentation route handlers.
-- **Database Engine & Driver**: LibSQL client (`@libsql/client`) paired with Drizzle ORM. Configured for local file storage in development (`file:local.db`), in-memory execution for fast unit tests (`:memory:`), and isolated file execution for E2E runs (`file:test.db`).
+- **Database Engine & Driver**: LibSQL client (`@libsql/client`) paired with Drizzle ORM. Configured for hosted Turso in development and production, in-memory execution for fast unit tests (`:memory:`), and a separate hosted Turso database for E2E runs.
 - **Schema Management & Versioning**: Versioned SQL migrations generated via Drizzle Kit into a dedicated migrations directory, paired with an automated programmatic migration runner on server and test initialization.
 - **Authentication Engine**: Better Auth handles session cookies, credential hashing, session lifecycles, and user identity tables.
 - **Role-Based Access Control**: Better Auth's official `admin` plugin is activated, establishing canonical roles (`user`, `admin`) directly in the user schema.

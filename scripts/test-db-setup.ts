@@ -1,27 +1,18 @@
-import fs from "node:fs";
-import path from "node:path";
+import { loadEnvConfig } from "@next/env";
+import { getTursoConfig } from "../db/config";
 import { runMigrations } from "../db/migrate";
 
+loadEnvConfig(process.cwd());
+
 export default async function setupTestDb() {
-  const dbPath = path.resolve(process.cwd(), "test.db");
-  if (fs.existsSync(dbPath)) {
-    fs.rmSync(dbPath, { force: true });
+  const { url, authToken } = getTursoConfig({
+    TURSO_DATABASE_URL: process.env.TEST_TURSO_DATABASE_URL,
+    TURSO_AUTH_TOKEN: process.env.TEST_TURSO_AUTH_TOKEN,
+  });
+  if (url === process.env.TURSO_DATABASE_URL) {
+    throw new Error("Browser tests require a separate Turso database.");
   }
-  const journalPath = path.resolve(process.cwd(), "test.db-journal");
-  if (fs.existsSync(journalPath)) {
-    fs.rmSync(journalPath, { force: true });
-  }
-
-  console.log("Initializing test database at file:test.db...");
-  await runMigrations("file:test.db");
-  console.log("Test database initialized with migrations.");
-}
-
-if (process.argv[1] && process.argv[1].endsWith("test-db-setup.ts")) {
-  setupTestDb()
-    .then(() => process.exit(0))
-    .catch((err) => {
-      console.error("Failed to setup test database:", err);
-      process.exit(1);
-    });
+  const { client } = await runMigrations(url, authToken);
+  client.close();
+  console.log("Turso test database initialized with migrations.");
 }
