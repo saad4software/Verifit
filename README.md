@@ -23,6 +23,7 @@ Verifit is an intelligent CV tailoring, requirement matching, and job applicatio
 - [Sanity CMS & AI Agent Actions Setup](#sanity-cms--ai-agent-actions-setup)
 - [User Guide & Application Workflows](#user-guide--application-workflows)
 - [Testing & Quality Assurance](#testing--quality-assurance)
+- [Continuous Integration (CI/CD) Pipeline](#continuous-integration-cicd-pipeline)
 - [Production Deployment](#production-deployment)
 
 ---
@@ -428,6 +429,40 @@ npm run lint
 - **Scoring Engine**: 17+ deterministic tests verifying weight calculations, nested `OR` alternatives, capped experience years, and quote provenance verification.
 - **Concurrency & Leases**: Validates distributed lease locks, 5-minute timeout recovery, and multi-tenant isolation.
 - **Applications & Tailoring**: Validates application CRUD, Kanban board workflows, score delta calculation, requirement delta mapping, anti-hallucination tailoring contracts, cover letter generation, and cascade deletion guards.
+
+---
+
+## Continuous Integration (CI/CD) Pipeline
+
+Verifit uses **GitHub Actions** for automated continuous integration to ensure code health, test passing, and successful production builds on every pull request and push to the `main` branch.
+
+The workflow is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) and consists of two sequential phases:
+
+1. **Test Phase (`test`)**:
+   - Sets up Node.js 20 with cached npm dependencies.
+   - Installs dependencies using clean install (`npm ci`).
+   - Executes the complete test suite with Vitest (`npm test`, 210+ tests across 26 test files).
+2. **Build Phase (`build`)**:
+   - Restores Next.js Turbopack cache (`.next/cache`) to accelerate build times.
+   - Injects environment configuration and safe CI fallbacks.
+   - Runs `npm run build` to validate TypeScript compilation, route definitions, and page generation.
+
+### Setting Up Required Data (GitHub Secrets & Variables)
+
+To configure your GitHub repository for CI runs:
+
+1. Open your repository on GitHub and navigate to:
+   **Settings** &rarr; **Secrets and variables** &rarr; **Actions**
+2. Click **New repository secret** and add the following:
+
+| Secret Name | Required / Optional | Description | Default Fallback in CI |
+| :--- | :--- | :--- | :--- |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | **Recommended** | Your Sanity CMS Project ID | Falls back to dummy ID for build verification |
+| `NEXT_PUBLIC_SANITY_DATASET` | **Recommended** | Sanity dataset name (`production`) | `production` |
+| `BETTER_AUTH_SECRET` | **Recommended** | 32+ character key for authentication | Generates 32-character test dummy secret |
+| `SANITY_API_TOKEN` | Optional | Sanity API write token for runtime testing | Omitted during standard CI |
+
+> **Note**: Standard build-time defaults (`DATABASE_URL=file:local.db`, `NEXT_PUBLIC_APP_URL=http://localhost:3000`, and `BETTER_AUTH_URL=http://localhost:3000`) are automatically configured within the CI runner, so builds and tests succeed out-of-the-box even before repository secrets are set.
 
 ---
 
